@@ -69,7 +69,7 @@ public class GameWindow extends JFrame implements
 		initFullScreen();
 		this.pauserun = true;
 		this.pauseshoot = true;
-		runing = new Animation(this);
+		runing = new Animation(this,100,300,10,10);
 		shooting = new Animation(this);
         bgImage = loadImage("images/bg4.jpg");
 		quit1Image = loadImage("images/Quit1.png");
@@ -145,10 +145,17 @@ public class GameWindow extends JFrame implements
 	//	if (!isPaused && isAnimShown && !isAnimPaused)
 	//		animation.update();
 	//	imageEffect.update();
-	if(!pauserun)
-	runing.update();
-	if(!this.pauseshoot)
-	shooting.update();
+	if(!this.pauserun){
+	runing.update();}
+	if(!this.pauseshoot){
+	shooting.update();}
+          System.out.println("anser : " +shooting.isfinished());
+	if(shooting.isfinished() > 1){
+         System.out.println("done shooting animation and moving on");
+		this.pauseshoot = true;
+		this.runing.setPosition(this.shooting.getX(), this.shooting.getY());
+		this.shooting.reset();
+	}
 
 	}
 
@@ -308,7 +315,7 @@ gScr.setColor(Color.black);
        for(int i=0;i<51;i++){
 		framename = filename + i + ".png";
         frame = loadImage(framename);
-		runing.addFrame(frame,40);
+		shooting.addFrame(frame,40);
 	   }
 
 	}
@@ -527,8 +534,13 @@ gScr.setColor(Color.black);
 		if (keyCode == KeyEvent.VK_LEFT) {
 			//bgManager.moveLeft();
 			//tileMap.moveLeft();
+			if(!this.pauseshoot){
+				this.shooting.moveLeft();
+			}else{
 			this.pauserun = false;
 			runing.moveLeft();
+		     System.out.println("going left bro");
+		}
            
 			//defender.moveLeft();
 		}
@@ -537,26 +549,37 @@ gScr.setColor(Color.black);
 			//bgManager.moveRight();
 			//tileMap.moveRight();
 			//defender.moveRight();
+			if(!this.pauseshoot){
+				this.shooting.moveRight();
+			}else{
 			this.pauserun = false;
-			runing.moveRight();
+			runing.moveRight();}
 		}
 		else
 		if (keyCode == KeyEvent.VK_UP) {
 			//defender.moveUp();
+			if(!this.pauseshoot){
+				this.shooting.moveUp();
+			}else{
 			this.pauserun = false;
-            runing.moveUp();
+			runing.moveUp();}
 		}
 		else
 		if (keyCode == KeyEvent.VK_DOWN) {
 			//defender.moveDown();
+			if(!this.pauseshoot){
+				this.shooting.moveDown();
+			}else{
 			this.pauserun = false;
-			runing.moveDown();
+			runing.moveDown();}
 		}
 
-		if(keyCode == KeyEvent.VK_SPACE){
+		if(keyCode == KeyEvent.VK_COMMA){
 			this.pauserun = true;
 			this.shooting.start();
-			this.shooting.setPosition(this.runing.getX(),this.runing.getY());
+			if(this.pauseshoot==true){
+				this.shooting.setPosition(this.runing.getX(),this.runing.getY());
+			}
 			this.pauseshoot = false;
 			
 
@@ -567,6 +590,7 @@ gScr.setColor(Color.black);
 
 	public void keyReleased (KeyEvent e) {
      this.pauserun = true;
+
 	}
 
 

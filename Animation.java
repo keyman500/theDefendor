@@ -93,8 +93,6 @@ public class Animation {
     */
 
     public synchronized void start() {
-	x = 100;
-	y = 300;
 
 	active = 1;				// 1 indicates first animation sequence
         animTime = 0;				// reset time animation has run for, to zero
@@ -254,7 +252,9 @@ public class Animation {
   
         y = y - dy;
      }
-  
+     public void reset(){
+         this.active = 0;
+     }
   
      public void moveDown () {
   
@@ -271,6 +271,10 @@ public class Animation {
     } 
     public int getY(){
         return this.y;
+    }
+
+    public int isfinished(){
+        return this.active;
     }
 
 }
