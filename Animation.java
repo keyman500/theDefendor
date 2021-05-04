@@ -11,8 +11,8 @@ import javax.swing.JFrame;
 
 public class Animation {
 
-    private static int XSIZE = 150;		// width of image for animation
-    private static int YSIZE = 125;		// height of image for animation
+    private  int XSIZE = 150;		// width of image for animation
+    private  int YSIZE = 125;		// height of image for animation
 
     private int dx = 10;
     private int dy = 10;
@@ -37,14 +37,44 @@ public class Animation {
     /**
         Creates a new, empty Animation.
     */
-
-    public Animation(JFrame window) {
+     private boolean infinite;
+    public Animation(JFrame window,int x, int y,int dx,int dy) {
+    this.infinite = true;
 	this.window = window;
         frames = new ArrayList<AnimFrame>();	// animation is a collection of frames        	totalDuration = 0;
 	active = 0;				// keeps track of how many animations have completed
 	soundManager = SoundManager.getInstance();	
 						// get reference to Singleton instance of SoundManager
+     this.x = x;
+     this.y = y;
+     this.dx = dx;
+     this.dy = dy;
     }
+
+    public Animation(JFrame window) {
+        this.infinite = true;
+        this.window = window;
+            frames = new ArrayList<AnimFrame>();	// animation is a collection of frames        	totalDuration = 0;
+        active = 0;				// keeps track of how many animations have completed
+        soundManager = SoundManager.getInstance();	
+                            // get reference to Singleton instance of SoundManager
+        }
+
+        public Animation(JFrame window,int x, int y,int dx,int dy,boolean infinite) {
+            this.infinite = true;
+            this.window = window;
+                frames = new ArrayList<AnimFrame>();	// animation is a collection of frames        	totalDuration = 0;
+            active = 0;				// keeps track of how many animations have completed
+            soundManager = SoundManager.getInstance();	
+                                // get reference to Singleton instance of SoundManager
+             this.x = x;
+             this.y = y;
+             this.dx = dx;
+             this.dy = dy;
+             this.infinite = infinite;
+            }
+
+
 
 
     /**
@@ -70,7 +100,7 @@ public class Animation {
         animTime = 0;				// reset time animation has run for, to zero
         currFrameIndex = 0;			// reset current frame to first fram,e
 	startTime = System.currentTimeMillis();	// reset start time to current time
-	playSound();				// start playing sound clip
+	//playSound();				// start playing sound clip
     }
 
 
@@ -94,9 +124,9 @@ public class Animation {
             animTime += elapsedTime;		// add elapsed time to time animation has run for
             if (animTime >= totalDuration) {			
 		active = active + 1;
-		if (active > 2) {		// allow two animation sequences only
+		if (active > 2&&this.infinite==false) {		// allow two animation sequences only
 			active = 0;
-			stopSound();
+			//stopSound();
 			return;
 		}
 						// if the time animation has run for > total duration
@@ -165,6 +195,10 @@ public class Animation {
 	soundManager.playSound("birdSound", true);
     }
 
+    public void setsize(int xsize,int ysize){
+        this.XSIZE = xsize;
+        this.YSIZE = ysize;
+    }
 
     public void stopSound() {
 	soundManager.stopSound("birdSound");

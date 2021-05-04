@@ -57,14 +57,15 @@ public class GameWindow extends JFrame implements
 	TileMap	tileMap;
 	private Image bgImage;
 	Player defender;
-	private Animation runing = null;
+	private Animation runing;
 	private Boolean pauserun;
 	public GameWindow() {
  
 		super("Tiled Bat and Ball Game: Full Screen Exclusive Mode");
-
+         
 		initFullScreen();
 		this.pauserun = true;
+		runing = new Animation(this);
         bgImage = loadImage("images/bg4.jpg");
 		quit1Image = loadImage("images/Quit1.png");
 		quit2Image = loadImage("images/Quit2.png");
@@ -276,10 +277,10 @@ gScr.setColor(Color.black);
 	public void loadrun(){
 		Image frame = null;
 		String filename = "./images/run/Armature_newAnimation_";
-
+         String framename="";
        for(int i=0;i<51;i++){
-		filename = filename + i + ".png";
-        frame = loadImage(filename);
+		framename = filename + i + ".png";
+        frame = loadImage(framename);
 		runing.addFrame(frame,20);
 	   }
 
@@ -502,7 +503,7 @@ gScr.setColor(Color.black);
 			//tileMap.moveLeft();
 			this.pauserun = false;
 			runing.moveLeft();
-
+           
 			//defender.moveLeft();
 		}
 		else
@@ -530,7 +531,7 @@ gScr.setColor(Color.black);
 
 
 	public void keyReleased (KeyEvent e) {
-       this.pauserun = true;
+     this.pauserun = true;
 	}
 
 
