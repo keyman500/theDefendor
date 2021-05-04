@@ -124,7 +124,7 @@ public class Animation {
             animTime += elapsedTime;		// add elapsed time to time animation has run for
             if (animTime >= totalDuration) {			
 		active = active + 1;
-		if (active > 2&&this.infinite==false) {		// allow two animation sequences only
+		if (active > 1&&this.infinite==false) {		// allow two animation sequences only
 			active = 0;
 			//stopSound();
 			return;
@@ -262,4 +262,15 @@ public class Animation {
   
         y = y + dy;
      }
+     public void setPosition(int x,int y){
+         this.x = x;
+         this.y = y;
+     }
+    public int getX(){
+        return this.x;
+    } 
+    public int getY(){
+        return this.y;
+    }
+
 }

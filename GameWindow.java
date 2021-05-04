@@ -59,13 +59,18 @@ public class GameWindow extends JFrame implements
 	Player defender;
 	private Animation runing;
 	private Boolean pauserun;
+
+	private Animation shooting;
+    private boolean pauseshoot;
 	public GameWindow() {
  
 		super("Tiled Bat and Ball Game: Full Screen Exclusive Mode");
          
 		initFullScreen();
 		this.pauserun = true;
+		this.pauseshoot = true;
 		runing = new Animation(this);
+		shooting = new Animation(this);
         bgImage = loadImage("images/bg4.jpg");
 		quit1Image = loadImage("images/Quit1.png");
 		quit2Image = loadImage("images/Quit2.png");
@@ -75,10 +80,12 @@ public class GameWindow extends JFrame implements
 		addKeyListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
-
+        //loading animations
 		loadAnimation();
 		loadrun();
+		load_shoot();
 		runing.start();
+
 		soundManager = SoundManager.getInstance();
 		image = new BufferedImage (pWidth, pHeight, BufferedImage.TYPE_INT_RGB);
 
@@ -140,6 +147,9 @@ public class GameWindow extends JFrame implements
 	//	imageEffect.update();
 	if(!pauserun)
 	runing.update();
+	if(!this.pauseshoot)
+	shooting.update();
+
 	}
 
 
@@ -170,7 +180,11 @@ public class GameWindow extends JFrame implements
 		gScr.drawImage (bgImage, 0, 0, pWidth, pHeight, null);
 		// draw the background image
 		//tileMap.draw((Graphics2D)gScr);
-		runing.draw((Graphics2D)gScr);
+		if(!pauseshoot){
+		shooting.draw((Graphics2D)gScr);}
+		else{
+		runing.draw((Graphics2D)gScr);}
+
 	//	defender.draw((Graphics2D)gScr);
 drawButtons(gScr);			// draw the buttons
 
@@ -285,7 +299,19 @@ gScr.setColor(Color.black);
 	   }
 
 	}
+     
+	
+	public void load_shoot(){
+		Image frame = null;
+		String filename = "./images/hipFire/Armature_hipFire_";
+         String framename="";
+       for(int i=0;i<51;i++){
+		framename = filename + i + ".png";
+        frame = loadImage(framename);
+		runing.addFrame(frame,40);
+	   }
 
+	}
 
 	public void loadAnimation() {
 
@@ -525,6 +551,15 @@ gScr.setColor(Color.black);
 			//defender.moveDown();
 			this.pauserun = false;
 			runing.moveDown();
+		}
+
+		if(keyCode == KeyEvent.VK_SPACE){
+			this.pauserun = true;
+			this.shooting.start();
+			this.shooting.setPosition(this.runing.getX(),this.runing.getY());
+			this.pauseshoot = false;
+			
+
 		}
 
 	}
