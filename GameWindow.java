@@ -67,7 +67,7 @@ public class GameWindow extends JFrame implements
 	private boolean pausefire;
 	ArrayList<Fireball> fireballs;
 	public GameWindow() {
-		super("Tiled Bat and Ball Game: Full Screen Exclusive Mode");
+		super("The Defendor: Full Screen Exclusive Mode");
          
 		initFullScreen();
 		this.fireballs = new ArrayList<Fireball>();
@@ -456,23 +456,6 @@ gScr.setColor(Color.black);
 
 	private void startGame() { 
 		if (gameThread == null) {
-			bgManager = new BackgroundManager (this, 12);
-			tileManager = new TileMapManager (this);
-
-			try {
-				tileMap = tileManager.loadMap("maps/map1.txt");
-				int w, h;
-				w = tileMap.getWidth();
-				h = tileMap.getHeight();
-				System.out.println ("Width of tilemap " + w);
-				System.out.println ("Height of tilemap " + h);
-			}
-			catch (Exception e) {
-				System.out.println(e);
-				System.exit(0);
-			}
-
-			imageEffect = new ImageEffect (this);
 			gameThread = new Thread(this);
 			gameThread.start();			
 
@@ -515,8 +498,7 @@ gScr.setColor(Color.black);
          	}
 		else
 		if (keyCode == KeyEvent.VK_A) {
-			//bgManager.moveLeft();
-			//tileMap.moveLeft();
+		
 			if(!this.pauseshoot){
 				this.shooting.moveLeft();
 			}else{
@@ -529,9 +511,6 @@ gScr.setColor(Color.black);
 		}
 		else
 		if (keyCode == KeyEvent.VK_D) {
-			//bgManager.moveRight();
-			//tileMap.moveRight();
-			//defender.moveRight();
 			if(!this.pauseshoot){
 				this.shooting.moveRight();
 			}else{
