@@ -87,7 +87,7 @@ public class GameWindow extends JFrame implements
 		addMouseListener(this);
 		addMouseMotionListener(this);
         //loading animations
-		loadAnimation();
+		
 		loadrun();
 		load_shoot();
 		runing.start();
@@ -357,58 +357,7 @@ gScr.setColor(Color.black);
 
 	}
 
-	public void loadAnimation() {
-
-		Image animImage1 = loadImage("images/bird1.png");
-		Image animImage2 = loadImage("images/bird2.png");
-		Image animImage3 = loadImage("images/bird3.png");
-		Image animImage4 = loadImage("images/bird4.png");
-		Image animImage5 = loadImage("images/bird5.png");
-		Image animImage6 = loadImage("images/bird6.png");
-		Image animImage7 = loadImage("images/bird7.png");
-		Image animImage8 = loadImage("images/bird8.png");
-		Image animImage9 = loadImage("images/bird9.png");
-
-		// create animation object and insert frames
-
-		animation = new Animation(this);
-
-		animation.addFrame(animImage1, 200);
-		animation.addFrame(animImage2, 200);
-		animation.addFrame(animImage3, 200);
-		animation.addFrame(animImage4, 200);
-		animation.addFrame(animImage5, 200);
-		animation.addFrame(animImage6, 200);
-		animation.addFrame(animImage7, 200);		
-		animation.addFrame(animImage8, 200);
-		animation.addFrame(animImage9, 200);
-/*
-		Image stripImage = loadImage("images/kaboom.gif");
-
-		int imageWidth = (int) stripImage.getWidth(null) / 6;
-		int imageHeight = stripImage.getHeight(null);
-		//int transparency = stripImage.getColorModel().getTransparency();
-
-		animation = new Animation(this);
-
-		for (int i=0; i<6; i++) {
-			BufferedImage frameImage = GraphicsEnvironment.getLocalGraphicsEnvironment().
-				getDefaultScreenDevice().getDefaultConfiguration().
-				createCompatibleImage(imageWidth, imageHeight,
-				Transparency.TRANSLUCENT);
-
-			Graphics2D g = (Graphics2D) frameImage.getGraphics();
-     
-			g.drawImage(stripImage, 
-					0, 0, imageWidth, imageHeight,
-					i*imageWidth, 0, (i*imageWidth)+imageWidth, imageHeight,
-					null);
-
-			animation.addFrame(frameImage, 500);
-		}
-*/	
-	}
-
+	
 
 	private void drawButtons (Graphics g) {
 		Font oldFont, newFont;
@@ -507,10 +456,7 @@ gScr.setColor(Color.black);
 
 	private void startGame() { 
 		if (gameThread == null) {
-		
-
 			bgManager = new BackgroundManager (this, 12);
-	
 			tileManager = new TileMapManager (this);
 
 			try {
