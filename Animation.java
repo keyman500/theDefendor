@@ -3,6 +3,10 @@ import java.util.ArrayList;
 import java.awt.Graphics2D;
 import java.awt.Dimension;
 import javax.swing.JFrame;
+import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
+import java.awt.image.BufferedImage;
+
 
 /**
     The Animation class manages a series of images (frames) and
@@ -11,34 +15,38 @@ import javax.swing.JFrame;
 
 public class Animation {
 
-    private  int XSIZE = 150;		// width of image for animation
-    private  int YSIZE = 125;		// height of image for animation
+    protected  int XSIZE = 150;		// width of image for animation
+    protected  int YSIZE = 125;		// height of image for animation
 
-    private int dx = 10;
-    private int dy = 10;
+    protected int dx = 10;
+    protected int dy = 10;
 
-    private int x;
-    private int y;
+    protected int x;
+    protected int y;
 
-    private Dimension dimension;
+    protected Dimension dimension;
 
-    private JFrame window;			// JFrame on which animation is being displayed
-    private ArrayList<AnimFrame> frames;	// collection of frames for animation
-    private int currFrameIndex;			// current frame being displayed
-    private long animTime;			// time that the animation has run for already
-    private long startTime;			// start time of the animation or time since last update
-    private long totalDuration;			// total duration of the animation
+    protected JFrame window;			// JFrame on which animation is being displayed
+    protected ArrayList<AnimFrame> frames;	// collection of frames for animation
+    protected int currFrameIndex;			// current frame being displayed
+    protected long animTime;			// time that the animation has run for already
+    protected long startTime;			// start time of the animation or time since last update
+    protected long totalDuration;			// total duration of the animation
  
-    private int active;
+    protected int active;
 
-    private SoundManager soundManager;		// reference to SoundManager to play clip
+    protected SoundManager soundManager;		// reference to SoundManager to play clip
 
 
     /**
         Creates a new, empty Animation.
     */
-     private boolean infinite;
+     protected boolean infinite;
+     protected double rotate_angle;
+   AffineTransform identity = new AffineTransform();
     public Animation(JFrame window,int x, int y,int dx,int dy) {
+    
+    this.rotate_angle = 0;
     this.infinite = true;
 	this.window = window;
         frames = new ArrayList<AnimFrame>();	// animation is a collection of frames        	totalDuration = 0;
@@ -93,6 +101,7 @@ public class Animation {
     */
 
     public synchronized void start() {
+        System.out.println("starting");
 
 	active = 1;				// 1 indicates first animation sequence
         animTime = 0;				// reset time animation has run for, to zero
@@ -160,10 +169,17 @@ public class Animation {
 
 
     public void draw (Graphics2D g2) {		// draw the current frame on the JPanel
-	if (active == 0)
-		return;
+	if (active == 0){
+		return;}
 
-        g2.drawImage(getImage(), x, y, XSIZE, YSIZE, null);
+
+       BufferedImage image = this.toBufferedImage(getImage());
+double locationX = image.getWidth() / 2;
+double locationY = image.getHeight() / 2;
+AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locationX, locationY);
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+        
+        g2.drawImage(op.filter(image, null), x, y,null);
     }
 
 
@@ -172,12 +188,12 @@ public class Animation {
     }
 
 
-    private AnimFrame getFrame(int i) {		// returns ith frame in the collection
+    protected AnimFrame getFrame(int i) {		// returns ith frame in the collection
         return frames.get(i);
     }
 
 
-    private class AnimFrame {			// inner class for the frames of the animation
+    protected class AnimFrame {			// inner class for the frames of the animation
 
         Image image;
         long endTime;
@@ -252,6 +268,9 @@ public class Animation {
   
         y = y - dy;
      }
+
+     
+
      public void reset(){
          this.active = 0;
      }
@@ -276,5 +295,33 @@ public class Animation {
     public int isfinished(){
         return this.active;
     }
+     
+    public void rotate(double angle){
+      this.rotate_angle = angle;
+
+    }
+    public double getAngle(){
+        return this.rotate_angle;
+    }
+
+
+    public static BufferedImage toBufferedImage(Image img){
+    if (img instanceof BufferedImage)
+    {
+        return (BufferedImage) img;
+    }
+
+    // Create a buffered image with transparency
+    BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+
+    // Draw the image on to the buffered image
+    Graphics2D bGr = bimage.createGraphics();
+    bGr.drawImage(img, 0, 0, null);
+    bGr.dispose();
+
+    // Return the buffered image
+    return bimage;
+}
+
 
 }

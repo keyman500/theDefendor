@@ -62,13 +62,17 @@ public class GameWindow extends JFrame implements
 
 	private Animation shooting;
     private boolean pauseshoot;
+	private Fireball f;
+	private boolean pausefire;
 	public GameWindow() {
  
 		super("Tiled Bat and Ball Game: Full Screen Exclusive Mode");
          
 		initFullScreen();
 		this.pauserun = true;
+		this.pausefire = true;
 		this.pauseshoot = true;
+		f = new Fireball(this,100,100,5,5);
 		runing = new Animation(this,100,300,10,10);
 		shooting = new Animation(this);
         bgImage = loadImage("images/bg4.jpg");
@@ -91,6 +95,8 @@ public class GameWindow extends JFrame implements
 
 		startGame();
 		defender = new Player(this,tileMap);
+
+
 	}
 
 
@@ -149,11 +155,16 @@ public class GameWindow extends JFrame implements
 	runing.update();}
 	if(!this.pauseshoot){
 	shooting.update();}
-          System.out.println("anser : " +shooting.isfinished());
+
+	if(!this.pausefire){
+		this.f.update();
+	}
+
+         
 	if(shooting.isfinished() > 1){
-         System.out.println("done shooting animation and moving on");
 		this.pauseshoot = true;
 		this.runing.setPosition(this.shooting.getX(), this.shooting.getY());
+	//	this.runing.rotate(this.runing.getAngle());
 		this.shooting.reset();
 	}
 
@@ -191,6 +202,12 @@ public class GameWindow extends JFrame implements
 		shooting.draw((Graphics2D)gScr);}
 		else{
 		runing.draw((Graphics2D)gScr);}
+
+		if(!this.pausefire){
+			this.f.draw((Graphics2D)gScr);
+		}
+
+		
 
 	//	defender.draw((Graphics2D)gScr);
 drawButtons(gScr);			// draw the buttons
@@ -531,7 +548,7 @@ gScr.setColor(Color.black);
 			return;				//  one of these keys (ESC, Q, END)			
          	}
 		else
-		if (keyCode == KeyEvent.VK_LEFT) {
+		if (keyCode == KeyEvent.VK_A) {
 			//bgManager.moveLeft();
 			//tileMap.moveLeft();
 			if(!this.pauseshoot){
@@ -545,7 +562,7 @@ gScr.setColor(Color.black);
 			//defender.moveLeft();
 		}
 		else
-		if (keyCode == KeyEvent.VK_RIGHT) {
+		if (keyCode == KeyEvent.VK_D) {
 			//bgManager.moveRight();
 			//tileMap.moveRight();
 			//defender.moveRight();
@@ -556,7 +573,7 @@ gScr.setColor(Color.black);
 			runing.moveRight();}
 		}
 		else
-		if (keyCode == KeyEvent.VK_UP) {
+		if (keyCode == KeyEvent.VK_W) {
 			//defender.moveUp();
 			if(!this.pauseshoot){
 				this.shooting.moveUp();
@@ -565,24 +582,13 @@ gScr.setColor(Color.black);
 			runing.moveUp();}
 		}
 		else
-		if (keyCode == KeyEvent.VK_DOWN) {
+		if (keyCode == KeyEvent.VK_S) {
 			//defender.moveDown();
 			if(!this.pauseshoot){
 				this.shooting.moveDown();
 			}else{
 			this.pauserun = false;
 			runing.moveDown();}
-		}
-
-		if(keyCode == KeyEvent.VK_COMMA){
-			this.pauserun = true;
-			this.shooting.start();
-			if(this.pauseshoot==true){
-				this.shooting.setPosition(this.runing.getX(),this.runing.getY());
-			}
-			this.pauseshoot = false;
-			
-
 		}
 
 	}
@@ -602,6 +608,23 @@ gScr.setColor(Color.black);
 	// implement methods of MouseListener interface
 
 	public void mouseClicked(MouseEvent e) {
+
+		this.pauserun = true;
+			this.shooting.start();
+			if(this.pauseshoot==true){
+				this.shooting.setPosition(this.runing.getX(),this.runing.getY());
+				this.shooting.rotate(this.runing.getAngle());
+			}
+			this.pauseshoot = false;
+			this.f.start();
+			this.f.rotate(this.shooting.getAngle());
+	    	this.f.setPosition(this.shooting.getX()+150, this.shooting.getY() + 40);
+			this.pausefire = false;
+			
+
+			
+			
+			
 
 	}
 
@@ -628,13 +651,31 @@ gScr.setColor(Color.black);
 
 	// implement methods of MouseMotionListener interface
 
-	public void mouseDragged(MouseEvent e) {
+	public void mouseDragged(MouseEvent e) {		
+	        double angle = 0;
+			double dx = e.getX() - runing.getX();
+			double dy = e.getY() - runing.getY();
+            angle = Math.atan2(dy, dx);
+	
+				this.shooting.rotate(angle);
+		
+			   this.runing.rotate(angle);
+		
 
 	}	
 
 
 	public void mouseMoved(MouseEvent e) {
+		double angle = 0;
 		testMouseMove(e.getX(), e.getY()); 
+		double dx = e.getX() - runing.getX();
+		double dy = e.getY() - runing.getY();
+		angle = Math.atan2(dy, dx);
+			this.shooting.rotate(angle);
+			this.runing.rotate(angle);
+		
+		
+
 	}
 
 
