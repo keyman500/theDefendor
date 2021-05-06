@@ -19,8 +19,6 @@ public class GameWindow extends JFrame implements
 	private Thread gameThread = null;            	// the thread that controls the game
 	private volatile boolean isRunning = false;    	// used to stop the game thread
 
-	private Animation animation = null;		// animation sprite
-	private ImageEffect imageEffect;		// sprite demonstrating an image effect
 
 	private BufferedImage image;			// drawing area for each frame
 
@@ -57,7 +55,6 @@ public class GameWindow extends JFrame implements
 	TileMapManager tileManager;
 	TileMap	tileMap;
 	private Image bgImage;
-	Player defender;
 	private Animation runing;
 	private Boolean pauserun;
 
@@ -66,6 +63,8 @@ public class GameWindow extends JFrame implements
 	private Fireball f;
 	private boolean pausefire;
 	ArrayList<Fireball> fireballs;
+	private Defendor defendor;
+
 	public GameWindow() {
 		super("The Defendor: Full Screen Exclusive Mode");
          
@@ -75,8 +74,7 @@ public class GameWindow extends JFrame implements
 		this.pausefire = true;
 		this.pauseshoot = true;
 		f = new Fireball(this,100,100,5,5);
-		runing = new Animation(this,100,300,10,10);
-		shooting = new Animation(this);
+		this.defendor = new Defendor(this,100,100,5,5);
         bgImage = loadImage("images/bg4.jpg");
 		quit1Image = loadImage("images/Quit1.png");
 		quit2Image = loadImage("images/Quit2.png");
@@ -87,17 +85,11 @@ public class GameWindow extends JFrame implements
 		addMouseListener(this);
 		addMouseMotionListener(this);
         //loading animations
-		
-		loadrun();
-		load_shoot();
-		runing.start();
-
+		this.defendor.running.start();
 		soundManager = SoundManager.getInstance();
 		image = new BufferedImage (pWidth, pHeight, BufferedImage.TYPE_INT_RGB);
 
 		startGame();
-		defender = new Player(this,tileMap);
-
 
 	}
 
@@ -154,9 +146,9 @@ public class GameWindow extends JFrame implements
 	int firex,firey;
 
 	if(!this.pauserun){
-	runing.update();}
+	this.defendor.running.update();}
 	if(!this.pauseshoot){
-	shooting.update();}
+		this.defendor.shooting.update();}
 
 	if(!this.pausefire){
 		for(int i=0;i<fireballs.size();i++){
@@ -179,11 +171,11 @@ public class GameWindow extends JFrame implements
 	}
 
          
-	if(shooting.isfinished() > 1){
+	if(this.defendor.shooting.isfinished() > 1){
 		this.pauseshoot = true;
-		this.runing.setPosition(this.shooting.getX(), this.shooting.getY());
-	//	this.runing.rotate(this.runing.getAngle());
-		this.shooting.reset();
+		this.defendor.running.setPosition(this.defendor.shooting.getX(), this.defendor.shooting.getY());
+	//	this.defendor.runing.rotate(this.runing.getAngle());
+	this.defendor.shooting.reset();
 	}
 
 	}
@@ -216,9 +208,9 @@ public class GameWindow extends JFrame implements
 		gScr.drawImage (bgImage, 0, 0, pWidth, pHeight, null);
 		// draw the background image
 		if(!pauseshoot){
-		shooting.draw((Graphics2D)gScr);}
+			this.defendor.shooting.draw((Graphics2D)gScr);}
 		else{
-		runing.draw((Graphics2D)gScr);}
+			this.defendor.running.draw((Graphics2D)gScr);}
 
 		if(!this.pausefire){
 		for(int i=0;i<fireballs.size();i++){
@@ -281,19 +273,6 @@ gScr.setColor(Color.black);
 	// This method provides details about the current display mode.
 
 	private void showCurrentMode() {
-/*
-		DisplayMode dm[] = device.getDisplayModes();
-
-		for (int i=0; i<dm.length; i++) {
-			System.out.println("Current Display Mode: (" + 
-                           dm[i].getWidth() + "," + dm[i].getHeight() + "," +
-                           dm[i].getBitDepth() + "," + dm[i].getRefreshRate() + ")  " );			
-		}
-
-		//DisplayMode d = new DisplayMode (800, 600, 32, 60);
-		//device.setDisplayMode(d);
-*/
-
 		DisplayMode dm = device.getDisplayMode();
 
 		System.out.println("Current Display Mode: (" + 
@@ -331,32 +310,6 @@ gScr.setColor(Color.black);
 	public Image loadImage (String fileName) {
 		return new ImageIcon(fileName).getImage();
 	}
-
-	public void loadrun(){
-		Image frame = null;
-		String filename = "./images/run/Armature_newAnimation_";
-         String framename="";
-       for(int i=0;i<51;i++){
-		framename = filename + i + ".png";
-        frame = loadImage(framename);
-		runing.addFrame(frame,20);
-	   }
-
-	}
-     
-	
-	public void load_shoot(){
-		Image frame = null;
-		String filename = "./images/hipFire/Armature_hipFire_";
-         String framename="";
-       for(int i=0;i<51;i++){
-		framename = filename + i + ".png";
-        frame = loadImage(framename);
-		shooting.addFrame(frame,15);
-	   }
-
-	}
-
 	
 
 	private void drawButtons (Graphics g) {
@@ -438,17 +391,7 @@ gScr.setColor(Color.black);
 		else
 		   g.drawImage(quit2Image, quitButtonArea.x, quitButtonArea.y, 180, 50, null);
 		    	       //quitButtonArea.width, quitButtonArea.height, null);
-/*
-		g.setColor(Color.BLACK);
-		g.drawOval(quitButtonArea.x, quitButtonArea.y, 
-			   quitButtonArea.width, quitButtonArea.height);
-		if (isOverQuitButton)
-			g.setColor(Color.WHITE);
-		else
-			g.setColor(Color.RED);
 
-		g.drawString("Quit", quitButtonArea.x+60, quitButtonArea.y+25);
-*/
 		g.setFont(oldFont);		// reset font
 
 	}
@@ -500,10 +443,10 @@ gScr.setColor(Color.black);
 		if (keyCode == KeyEvent.VK_A) {
 		
 			if(!this.pauseshoot){
-				this.shooting.moveLeft();
+				this.defendor.shooting.moveLeft();
 			}else{
 			this.pauserun = false;
-			runing.moveLeft();
+			this.defendor.running.moveLeft();
 		     System.out.println("going left bro");
 		}
            
@@ -512,28 +455,28 @@ gScr.setColor(Color.black);
 		else
 		if (keyCode == KeyEvent.VK_D) {
 			if(!this.pauseshoot){
-				this.shooting.moveRight();
+				this.defendor.shooting.moveRight();
 			}else{
 			this.pauserun = false;
-			runing.moveRight();}
+			this.defendor.running.moveRight();}
 		}
 		else
 		if (keyCode == KeyEvent.VK_W) {
 			//defender.moveUp();
 			if(!this.pauseshoot){
-				this.shooting.moveUp();
+				this.defendor.shooting.moveUp();
 			}else{
 			this.pauserun = false;
-			runing.moveUp();}
+			this.defendor.running.moveUp();}
 		}
 		else
 		if (keyCode == KeyEvent.VK_S) {
 			//defender.moveDown();
 			if(!this.pauseshoot){
-				this.shooting.moveDown();
+				this.defendor.shooting.moveDown();
 			}else{
 			this.pauserun = false;
-			runing.moveDown();}
+			this.defendor.running.moveDown();}
 		}
 
 	}
@@ -555,16 +498,16 @@ gScr.setColor(Color.black);
 	public void mouseClicked(MouseEvent e) {
 
 		this.pauserun = true;
-			this.shooting.start();
+		this.defendor.shooting.start();
 			if(this.pauseshoot==true){
-				this.shooting.setPosition(this.runing.getX(),this.runing.getY());
-				this.shooting.rotate(this.runing.getAngle());
+				this.defendor.shooting.setPosition(this.defendor.running.getX(),this.defendor.running.getY());
+				this.defendor.shooting.rotate(this.defendor.running.getAngle());
 			}
 			this.pauseshoot = false;
-			this.f = new Fireball(this,this.shooting.getX()+150,this.shooting.getY() + 40,40,40);
+			this.f = new Fireball(this,this.defendor.shooting.getX()+150,this.defendor.shooting.getY() + 40,40,40);
 			fireballs.add(this.f);
 			this.f.start();
-			this.f.rotate(this.shooting.getAngle());
+			this.f.rotate(this.defendor.shooting.getAngle());
 	    	//this.f.setPosition(this.shooting.getX()+150, this.shooting.getY() + 40);
 			this.pausefire = false;
 			
@@ -600,13 +543,13 @@ gScr.setColor(Color.black);
 
 	public void mouseDragged(MouseEvent e) {		
 	        double angle = 0;
-			double dx = e.getX() - runing.getX();
-			double dy = e.getY() - runing.getY();
+			double dx = e.getX() - this.defendor.running.getX();
+			double dy = e.getY() - this.defendor.running.getY();
             angle = Math.atan2(dy, dx);
 	
-				this.shooting.rotate(angle);
+			this.defendor.shooting.rotate(angle);
 		
-			   this.runing.rotate(angle);
+			this.defendor.running.rotate(angle);
 		
 
 	}	
@@ -615,14 +558,12 @@ gScr.setColor(Color.black);
 	public void mouseMoved(MouseEvent e) {
 		double angle = 0;
 		testMouseMove(e.getX(), e.getY()); 
-		double dx = e.getX() - runing.getX();
-		double dy = e.getY() - runing.getY();
+		double dx = e.getX() - this.defendor.running.getX();
+		double dy = e.getY() - this.defendor.running.getY();
 		angle = Math.atan2(dy, dx);
-			this.shooting.rotate(angle);
-			this.runing.rotate(angle);
-		
-		
-
+		this.defendor.shooting.rotate(angle);
+		this.defendor.running.rotate(angle);
+	
 	}
 
 
@@ -647,17 +588,17 @@ gScr.setColor(Color.black);
 		if (isOverShowAnimButton && !isPaused) {// mouse click on Start Anim button
 			isAnimShown = true;
 		 	isAnimPaused = false;
-			animation.start();
+
 		}
 		else
 		if (isOverPauseAnimButton) {		// mouse click on Pause Anim button
 			if (isAnimPaused) {
 				isAnimPaused = false;
-				animation.playSound();
+				
 			}
 			else {
 				isAnimPaused = true;	// toggle pausing
-				animation.stopSound();
+				
 			}
 		}
 		else if (isOverQuitButton) {		// mouse click on Quit button

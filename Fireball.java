@@ -25,29 +25,9 @@ public Fireball(JFrame window,int x, int y,int dx,int dy){
 		this.addFrame(frame,10);}
 	   }
     
-       public Image loadImage (String fileName) {
-		return new ImageIcon(fileName).getImage();
-	}
+  
 
-    public void shoot(double angle){
-  this.rotate(angle);
-        /*
-            x += this.x + this.dx * Math.cos(angle);
-            y += this.y + this.dy * Math.sin(angle);
-            if(x>(dimension.width+ 200)){
-                break;
-            }
-            if(y>(dimension.height+200)){
-                break;
-            }
-            if(y< -200){
-                break;
-            }
-            if(x<-200){
-                break;
-            }
-        }*/
-    }
+  
     @Override
     public synchronized void update() {
         double fx,fy;
