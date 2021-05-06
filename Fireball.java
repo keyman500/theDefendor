@@ -22,7 +22,7 @@ public Fireball(JFrame window,int x, int y,int dx,int dy){
        for(int i=0;i<40;i++){
 		framename = filename + i + ".png";
         frame = loadImage(framename);
-		this.addFrame(frame,20);}
+		this.addFrame(frame,10);}
 	   }
     
        public Image loadImage (String fileName) {
@@ -50,6 +50,7 @@ public Fireball(JFrame window,int x, int y,int dx,int dy){
     }
     @Override
     public synchronized void update() {
+        double fx,fy;
 
         if (active == 0)
            return;
@@ -81,8 +82,11 @@ public Fireball(JFrame window,int x, int y,int dx,int dy){
             }
     
             dimension = window.getSize();
-    
-            this.x += this.dx;
+
+            fx = this.x + this.dx * Math.cos(this.rotate_angle);
+            fy = this.y + this.dy * Math.sin(this.rotate_angle);
+            this.x = (int) fx;
+            this.y =  (int) fy;
         }
 
         @Override

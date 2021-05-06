@@ -3,6 +3,7 @@ import java.awt.*;			// need this for certain AWT classes
 import java.awt.image.BufferedImage;
 import java.awt.event.*;
 import java.awt.image.BufferStrategy;	// need this to implement page flipping
+import java.util.ArrayList;
 
 
 public class GameWindow extends JFrame implements
@@ -64,11 +65,12 @@ public class GameWindow extends JFrame implements
     private boolean pauseshoot;
 	private Fireball f;
 	private boolean pausefire;
+	ArrayList<Fireball> fireballs;
 	public GameWindow() {
- 
 		super("Tiled Bat and Ball Game: Full Screen Exclusive Mode");
          
 		initFullScreen();
+		this.fireballs = new ArrayList<Fireball>();
 		this.pauserun = true;
 		this.pausefire = true;
 		this.pauseshoot = true;
@@ -148,16 +150,32 @@ public class GameWindow extends JFrame implements
 
 
 	public void gameUpdate () {
-	//	if (!isPaused && isAnimShown && !isAnimPaused)
-	//		animation.update();
-	//	imageEffect.update();
+	Dimension dimension = this.getSize();
+	int firex,firey;
+
 	if(!this.pauserun){
 	runing.update();}
 	if(!this.pauseshoot){
 	shooting.update();}
 
 	if(!this.pausefire){
-		this.f.update();
+		for(int i=0;i<fireballs.size();i++){
+			firex = fireballs.get(i).getX();
+			firey= fireballs.get(i).getY();
+			if(firex>(dimension.width+ 20)){
+                fireballs.remove(i);
+            }else
+            if(firey>(dimension.height+20)){
+                fireballs.remove(i);
+            }else
+            if(firey< -20){
+				fireballs.remove(i);
+            }else
+            if(firex<-20){
+				fireballs.remove(i);
+            }else{
+             fireballs.get(i).update();}
+		}
 	}
 
          
@@ -197,15 +215,17 @@ public class GameWindow extends JFrame implements
 	public void gameRender (Graphics gScr) {		// draw the game objects
 		gScr.drawImage (bgImage, 0, 0, pWidth, pHeight, null);
 		// draw the background image
-		//tileMap.draw((Graphics2D)gScr);
 		if(!pauseshoot){
 		shooting.draw((Graphics2D)gScr);}
 		else{
 		runing.draw((Graphics2D)gScr);}
 
 		if(!this.pausefire){
-			this.f.draw((Graphics2D)gScr);
+		for(int i=0;i<fireballs.size();i++){
+			fireballs.get(i).draw((Graphics2D)gScr);
 		}
+		}
+	
 
 		
 
@@ -332,7 +352,7 @@ gScr.setColor(Color.black);
        for(int i=0;i<51;i++){
 		framename = filename + i + ".png";
         frame = loadImage(framename);
-		shooting.addFrame(frame,40);
+		shooting.addFrame(frame,15);
 	   }
 
 	}
@@ -616,9 +636,11 @@ gScr.setColor(Color.black);
 				this.shooting.rotate(this.runing.getAngle());
 			}
 			this.pauseshoot = false;
+			this.f = new Fireball(this,this.shooting.getX()+150,this.shooting.getY() + 40,40,40);
+			fireballs.add(this.f);
 			this.f.start();
 			this.f.rotate(this.shooting.getAngle());
-	    	this.f.setPosition(this.shooting.getX()+150, this.shooting.getY() + 40);
+	    	//this.f.setPosition(this.shooting.getX()+150, this.shooting.getY() + 40);
 			this.pausefire = false;
 			
 
