@@ -310,7 +310,7 @@ gScr.setColor(Color.black);
 	public Image loadImage (String fileName) {
 		return new ImageIcon(fileName).getImage();
 	}
-	
+
 
 	private void drawButtons (Graphics g) {
 		Font oldFont, newFont;
@@ -484,6 +484,8 @@ gScr.setColor(Color.black);
 
 	public void keyReleased (KeyEvent e) {
      this.pauserun = true;
+	 this.defendor.running.stopSound();
+	 this.defendor.shooting.stopSound();
 
 	}
 
@@ -496,20 +498,7 @@ gScr.setColor(Color.black);
 	// implement methods of MouseListener interface
 
 	public void mouseClicked(MouseEvent e) {
-
-		this.pauserun = true;
-		this.defendor.shooting.start();
-			if(this.pauseshoot==true){
-				this.defendor.shooting.setPosition(this.defendor.running.getX(),this.defendor.running.getY());
-				this.defendor.shooting.rotate(this.defendor.running.getAngle());
-			}
-			this.pauseshoot = false;
-			this.f = new Fireball(this,this.defendor.shooting.getX()+150,this.defendor.shooting.getY() + 40,40,40);
-			fireballs.add(this.f);
-			this.f.start();
-			this.f.rotate(this.defendor.shooting.getAngle());
-	    	//this.f.setPosition(this.shooting.getX()+150, this.shooting.getY() + 40);
-			this.pausefire = false;
+     
 			
 
 			
@@ -531,6 +520,28 @@ gScr.setColor(Color.black);
 
 	public void mousePressed(MouseEvent e) {
 		testMousePress(e.getX(), e.getY());
+		int offx,offy;
+		double theta;
+
+		this.pauserun = true;
+		this.defendor.shooting.start();
+			if(this.pauseshoot==true){
+				this.defendor.shooting.setPosition(this.defendor.running.getX(),this.defendor.running.getY());
+				this.defendor.shooting.rotate(this.defendor.running.getAngle());
+			}
+			this.pauseshoot = false; 
+			theta = this.defendor.shooting.getAngle();
+			offx =  (int) (120 * Math.cos(theta) - 5 * Math.sin(theta));
+			offy =  (int) (120 * Math.sin(theta) + 5 * Math.cos(theta));
+			//this.f = new Fireball(this,offx,offy,40,40);
+			this.f = new Fireball(this,this.defendor.shooting.getX()+offx,this.defendor.shooting.getY() + offy,40,40);
+			//this.f = new Fireball(this,this.defendor.shooting.getX()+150,this.defendor.shooting.getY() + 40,40,40);
+			fireballs.add(this.f);
+			this.f.start();
+			this.f.rotate(this.defendor.shooting.getAngle());
+	    	//this.f.setPosition(this.shooting.getX()+150, this.shooting.getY() + 40);
+			this.pausefire = false;
+			this.soundManager.playSound("fireball", false);
 	}
 
 

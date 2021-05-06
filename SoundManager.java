@@ -20,15 +20,16 @@ public class SoundManager {				// a Singleton class
 		Clip clip;
 	//	clips.put("background", clip);		// background theme sound
 
-		clip = loadClip("sounds/hitSound.wav");
-		clips.put("hit", clip);			// played when player's sprite collides 
-							//   with another sprice
+		clip = loadClip("sounds/fireball.wav");
+		clips.put("fireball", clip);		
+						
 
-		clip = loadClip("sounds/appearSound.wav");
-	clips.put("appear", clip);		// played when a special sprite 
+		clip = loadClip("sounds/Concrete2.wav");
+	clips.put("walk", clip);		// played when a special sprite 
 							//   makes an appearance
 
-		clip = loadClip("sounds/BirdSound.wav");
+		clip = loadClip("sounds/speak.wav");
+		clips.put("speak",clip);
 	}
 
 

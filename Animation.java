@@ -207,7 +207,7 @@ AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locati
 
 
     public void playSound() {
-	soundManager.playSound("birdSound", true);
+	soundManager.playSound("walk", true);
     }
 
     public void setsize(int xsize,int ysize){
@@ -216,10 +216,11 @@ AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locati
     }
 
     public void stopSound() {
-	soundManager.stopSound("birdSound");
+	soundManager.stopSound("walk");
     }
     
     public void moveLeft () {
+        playSound();
         Dimension dimension;
   
         if (!window.isVisible ()) return;
@@ -235,6 +236,7 @@ AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locati
   
   
      public void moveRight () {
+         playSound();
         Dimension dimension;
   
         if (!window.isVisible ()) return;
@@ -264,7 +266,7 @@ AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locati
   
   
      public void moveUp () {
-  
+  playSound();
         if (!window.isVisible ()) return;
   
         y = y - dy;
@@ -277,7 +279,7 @@ AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locati
      }
   
      public void moveDown () {
-  
+     playSound();
         if (!window.isVisible ()) return;
   
         y = y + dy;
