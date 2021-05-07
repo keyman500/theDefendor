@@ -44,9 +44,12 @@ public class Animation {
     */
      protected boolean infinite;
      protected double rotate_angle;
+     protected boolean pause;
+     protected BufferedImage image1;
    AffineTransform identity = new AffineTransform();
+
     public Animation(JFrame window,int x, int y,int dx,int dy) {
-    
+    this.pause = false;
     this.rotate_angle = 0;
     this.infinite = true;
 	this.window = window;
@@ -61,6 +64,7 @@ public class Animation {
     }
 
     public Animation(JFrame window) {
+        this.pause = false;
         this.infinite = true;
         this.window = window;
             frames = new ArrayList<AnimFrame>();	// animation is a collection of frames        	totalDuration = 0;
@@ -70,7 +74,7 @@ public class Animation {
         }
 
         public Animation(JFrame window,int x, int y,int dx,int dy,boolean infinite) {
-            this.infinite = true;
+            this.pause = false;
             this.window = window;
                 frames = new ArrayList<AnimFrame>();	// animation is a collection of frames        	totalDuration = 0;
             active = 0;				// keeps track of how many animations have completed
@@ -90,6 +94,20 @@ public class Animation {
         Adds an image to the animation with the specified
         duration (time to display the image).
     */
+    public void loadAnimation(String filename,int frames,int frametime){
+        ArrayList<AnimFrame> framer  =new ArrayList<AnimFrame>();
+        long total = 0;
+		Image frame = null;
+         String framename="";
+       for(int i=0;i<frames;i++){
+        total += frametime;
+		framename = filename + i + ".png";
+        frame = loadImage(framename);
+        framer.add(new AnimFrame(frame,total));
+		this.addFrame(frame,frametime);
+    }
+    this.frames = framer;
+	   }
 
     public synchronized void addFrame(Image image, long duration) {
         totalDuration += duration;
@@ -119,8 +137,11 @@ public class Animation {
 
     public synchronized void update() {
 
+
 	if (active == 0)
 	   return;
+
+       if(!this.pause){
 
         long currTime = System.currentTimeMillis();
 						// find the current time
@@ -150,7 +171,7 @@ public class Animation {
 
         dimension = window.getSize();
 
-
+    }
     }
 
 
@@ -170,19 +191,38 @@ public class Animation {
 
 
     public void draw (Graphics2D g2) {		// draw the current frame on the JPanel
-	if (active == 0){
+        
+            
+    
+        if (active == 0){
 		return;}
 
 
-       BufferedImage image = this.toBufferedImage(getImage());
+
+   BufferedImage image = this.toBufferedImage(getImage());
+
+//BufferedImage image = this.toBufferedImage(getImage());
+
+
 double locationX = image.getWidth() / 2;
 double locationY = image.getHeight() / 2;
+
 AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locationX, locationY);
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
         
         g2.drawImage(op.filter(image, null), x, y,null);
+   
+
+    }
+    
+
+    public void pauseAnimation(){
+        this.pause = true;
     }
 
+    public void unpauseAnimation(){
+        this.pause = false;
+    }
 
     public int getNumFrames() {			// find out how many frames in animation
 	return frames.size();
@@ -313,7 +353,6 @@ AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locati
     {
         return (BufferedImage) img;
     }
-
     // Create a buffered image with transparency
     BufferedImage bimage = new BufferedImage(img.getWidth(null), img.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 

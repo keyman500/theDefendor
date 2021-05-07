@@ -64,11 +64,13 @@ public class GameWindow extends JFrame implements
 	private boolean pausefire;
 	ArrayList<Fireball> fireballs;
 	private Defendor defendor;
+	private Enemy enemy;
 
 	public GameWindow() {
 		super("The Defendor: Full Screen Exclusive Mode");
          
 		initFullScreen();
+		this.enemy =  new Enemy(this,100,100,1,1);
 		this.fireballs = new ArrayList<Fireball>();
 		this.pauserun = true;
 		this.pausefire = true;
@@ -86,6 +88,7 @@ public class GameWindow extends JFrame implements
 		addMouseMotionListener(this);
         //loading animations
 		this.defendor.running.start();
+		this.enemy.start();
 		soundManager = SoundManager.getInstance();
 		image = new BufferedImage (pWidth, pHeight, BufferedImage.TYPE_INT_RGB);
 
@@ -168,6 +171,8 @@ public class GameWindow extends JFrame implements
             }else{
              fireballs.get(i).update();}
 		}
+
+		
 	}
 
          
@@ -177,6 +182,8 @@ public class GameWindow extends JFrame implements
 	//	this.defendor.runing.rotate(this.runing.getAngle());
 	this.defendor.shooting.reset();
 	}
+
+	this.enemy.update();
 
 	}
 
@@ -219,7 +226,7 @@ public class GameWindow extends JFrame implements
 		}
 	
 
-		
+		this.enemy.draw((Graphics2D)gScr);
 
 	//	defender.draw((Graphics2D)gScr);
 drawButtons(gScr);			// draw the buttons
@@ -520,6 +527,7 @@ gScr.setColor(Color.black);
 
 	public void mousePressed(MouseEvent e) {
 		testMousePress(e.getX(), e.getY());
+		this.enemy.stab();
 		int offx,offy;
 		double theta;
 
