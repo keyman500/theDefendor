@@ -6,7 +6,9 @@ import javax.swing.JFrame;
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import javax.swing.*;	
+import javax.swing.*;
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 public class Fireball extends Animation{
 
 public Fireball(JFrame window,int x, int y,int dx,int dy){
@@ -84,6 +86,12 @@ public Fireball(JFrame window,int x, int y,int dx,int dy){
                 g2.drawImage(op.filter(image, null), x, y,200,200,null);
 
             }
+
+        @Override
+        public Rectangle2D.Double getBoundingRectangle() {
+            return new Rectangle2D.Double (x, y, 200 ,200);
+         }
+        
 
 
     

@@ -7,6 +7,8 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
 import javax.swing.*;	
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 
 
 /**
@@ -14,7 +16,7 @@ import javax.swing.*;
     the amount of time to display each frame.
 */
 
-public class Animation {
+public class Animation implements GameAnimation{
 
     protected  int XSIZE = 150;		// width of image for animation
     protected  int YSIZE = 125;		// height of image for animation
@@ -229,20 +231,8 @@ AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locati
     }
 
 
-    protected AnimFrame getFrame(int i) {		// returns ith frame in the collection
+    public AnimFrame getFrame(int i) {		// returns ith frame in the collection
         return frames.get(i);
-    }
-
-
-    protected class AnimFrame {			// inner class for the frames of the animation
-
-        Image image;
-        long endTime;
-
-        public AnimFrame(Image image, long endTime) {
-            this.image = image;
-            this.endTime = endTime;
-        }
     }
 
 
@@ -368,5 +358,10 @@ AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locati
 public Image loadImage (String fileName) {
     return new ImageIcon(fileName).getImage();
 }
+
+public Rectangle2D.Double getBoundingRectangle() {
+    return new Rectangle2D.Double (x, y, XSIZE, YSIZE);
+ }
+
 
 }

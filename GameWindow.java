@@ -70,8 +70,9 @@ public class GameWindow extends JFrame implements
 		super("The Defendor: Full Screen Exclusive Mode");
          
 		initFullScreen();
-		this.enemy =  new Enemy(this,100,100,1,1);
+		
 		this.fireballs = new ArrayList<Fireball>();
+		this.enemy =  new Enemy(this,100,100,1,1,this.fireballs);
 		this.pauserun = true;
 		this.pausefire = true;
 		this.pauseshoot = true;
@@ -88,11 +89,14 @@ public class GameWindow extends JFrame implements
 		addMouseMotionListener(this);
         //loading animations
 		this.defendor.running.start();
-		this.enemy.start();
+		//this.enemy.start();
+		this.defendor.setActive(0);
 		soundManager = SoundManager.getInstance();
 		image = new BufferedImage (pWidth, pHeight, BufferedImage.TYPE_INT_RGB);
 
 		startGame();
+
+		
 
 	}
 
@@ -181,6 +185,7 @@ public class GameWindow extends JFrame implements
 		this.defendor.running.setPosition(this.defendor.shooting.getX(), this.defendor.shooting.getY());
 	//	this.defendor.runing.rotate(this.runing.getAngle());
 	this.defendor.shooting.reset();
+	this.defendor.setActive(0);
 	}
 
 	this.enemy.update();
@@ -527,12 +532,16 @@ gScr.setColor(Color.black);
 
 	public void mousePressed(MouseEvent e) {
 		testMousePress(e.getX(), e.getY());
-		this.enemy.stab();
+		//this.enemy.stab();
+		//this.enemy.doThrust();
+		//this.enemy.doHit();
+
 		int offx,offy;
 		double theta;
 
 		this.pauserun = true;
 		this.defendor.shooting.start();
+		this.defendor.setActive(1);
 			if(this.pauseshoot==true){
 				this.defendor.shooting.setPosition(this.defendor.running.getX(),this.defendor.running.getY());
 				this.defendor.shooting.rotate(this.defendor.running.getAngle());
@@ -575,6 +584,7 @@ gScr.setColor(Color.black);
 
 
 	public void mouseMoved(MouseEvent e) {
+		//get angle for if you shooting here should be done so the angle of the char not off
 		double angle = 0;
 		testMouseMove(e.getX(), e.getY()); 
 		double dx = e.getX() - this.defendor.running.getX();
