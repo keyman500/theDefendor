@@ -20,13 +20,24 @@ public class EnemyManager{
     Defendor defendor;
     int defeated;
     Random random;
-public EnemyManager(JFrame window,ArrayList<Fireball> fireballs, Defendor defendor){
+    int dy;
+    int dx;
+    boolean enemywait;
+    Dimension dimension;
+    boolean reposition;
+public EnemyManager(JFrame window,ArrayList<Fireball> fireballs, Defendor defendor,int dy,int dx){
 enemies = new ArrayList<Enemy>();
 this.fireballs = fireballs;
 this.window = window;
 level =0;
 this.defendor = defendor;
 this.random = new Random();
+this.dy = dy;
+this.dx = dx;
+this.enemywait = false;
+this.dimension = window.getSize();
+this.reposition = false;
+createEnemies(3);
 }
 
 public void draw(Graphics2D g2){
@@ -41,35 +52,71 @@ public void update(){
     double dx,dy,angle;
     int x1 = (int) p.getX();
     int y1 = (int) p.getY();
+    int repositinx=0,repositiny=0;
 
     for(int i =0;i<enemies.size();i++){
-        dx = x1 - enemies.get(i).getX();
-        dy = y1 - enemies.get(i).getY();
+        Enemy e = enemies.get(i);
+        if(random.nextInt(20)==0){
+            e.doThrust();
+        }
+        if(e.getHits()>20){
+            enemies.remove(i);
+        }
+        else{
+        dx = x1 - e.getX();
+        dy = y1 - e.getY();
         angle = Math.atan2(dy, dx);
-        enemies.get(i).rotate(angle);
-        enemies.get(i).update();
+        e.rotate(angle);
+        //loop for collision
+        for(int l=0;l<enemies.size();l++){
+        
+        while(e.getBoundingRectangle().intersects(enemies.get(l).getBoundingRectangle())&&i!=l){
+           repositinx = random.nextInt((int)dimension.getWidth());
+           repositiny = random.nextInt((int)dimension.getHeight());
+           e.doTeleport();
+           e.setPosition(repositinx, repositiny);
+        }
+    
     }
+    //if(reposition){
+     
+    //    reposition = false;
+   // }
+    //end loop for collision
+           
+           e.update();
+        //   e.unsetCollide();
+    }
+
 
 }
 
-public void createEnemies(int n,int x,int y,int dx,int dy){
+}
+
+public void createEnemies(int n){
     
-    Dimension dimension = window.getSize();
+for(int i=0;i<n;i++){
+    addEnemy();
+}
+}
+
+public void addEnemy(){
     int width = (int) dimension.getWidth();
     int height = (int) dimension.getHeight();
 
-    x = random.nextInt(width);
-    y = random.nextInt(height);
+  int  x = random.nextInt(width);
+  int  y = random.nextInt(height);
+    Enemy e = new Enemy(this.window, x, y, dx, dy, fireballs);
+
     if(!enemies.isEmpty()){
         for(int k=0;k<enemies.size();k++){
-            
+            while(enemies.get(k).getBoundingRectangle().intersects(e.getBoundingRectangle())){            
+                  x = random.nextInt(width);
+                  y = random.nextInt(height);
+                  e.setPosition(x, y);
+            }
         }
     }
-
-for(int i=0;i<n;i++){
-    enemies.add(new Enemy(this.window, x, y, dx, dy, fireballs));
+     enemies.add(e);
 }
-}
-
-
 }

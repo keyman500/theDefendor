@@ -63,5 +63,7 @@ public interface GameAnimation{
         return bimage;
     }
     public Image loadImage (String fileName);
+    public int getImageWidth();
+    public int getImageHeight();
 
 }

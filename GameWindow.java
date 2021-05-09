@@ -65,6 +65,7 @@ public class GameWindow extends JFrame implements
 	ArrayList<Fireball> fireballs;
 	private Defendor defendor;
 	private Enemy enemy;
+	private EnemyManager enemyManager;
 
 	public GameWindow() {
 		super("The Defendor: Full Screen Exclusive Mode");
@@ -91,6 +92,7 @@ public class GameWindow extends JFrame implements
 		this.defendor.running.start();
 		//this.enemy.start();
 		this.defendor.setActive(0);
+		this.enemyManager = new EnemyManager(this,fireballs,defendor,10,10);
 		soundManager = SoundManager.getInstance();
 		image = new BufferedImage (pWidth, pHeight, BufferedImage.TYPE_INT_RGB);
 
@@ -189,6 +191,7 @@ public class GameWindow extends JFrame implements
 	}
 
 	this.enemy.update();
+	this.enemyManager.update();
 
 	}
 
@@ -232,6 +235,7 @@ public class GameWindow extends JFrame implements
 	
 
 		this.enemy.draw((Graphics2D)gScr);
+		this.enemyManager.draw((Graphics2D)gScr);
 
 	//	defender.draw((Graphics2D)gScr);
 drawButtons(gScr);			// draw the buttons

@@ -26,6 +26,8 @@ public class Animation implements GameAnimation{
 
     protected int x;
     protected int y;
+    protected double dy2;
+    protected double dx2;
 
     protected Dimension dimension;
 
@@ -48,6 +50,8 @@ public class Animation implements GameAnimation{
      protected double rotate_angle;
      protected boolean pause;
      protected BufferedImage image1;
+     protected int imagewidth;
+     protected int imageheight;
    AffineTransform identity = new AffineTransform();
 
     public Animation(JFrame window,int x, int y,int dx,int dy) {
@@ -63,6 +67,8 @@ public class Animation implements GameAnimation{
      this.y = y;
      this.dx = dx;
      this.dy = dy;
+     this.dy2 = (double) dy;
+     this.dx2 = (double) dx;
     }
 
     public Animation(JFrame window) {
@@ -101,6 +107,9 @@ public class Animation implements GameAnimation{
         long total = 0;
 		Image frame = null;
          String framename="";
+        Image check =  loadImage(filename + 0 + ".png");
+        this.imageheight = check.getWidth(null);
+        this.imagewidth= check.getHeight(null);
        for(int i=0;i<frames;i++){
         total += frametime;
 		framename = filename + i + ".png";
@@ -362,6 +371,11 @@ public Image loadImage (String fileName) {
 public Rectangle2D.Double getBoundingRectangle() {
     return new Rectangle2D.Double (x, y, XSIZE, YSIZE);
  }
-
+public int getImageHeight(){
+    return this.imageheight;
+}
+public int getImageWidth(){
+    return this.imagewidth;
+}
 
 }

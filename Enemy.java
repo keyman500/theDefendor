@@ -13,6 +13,7 @@ public class Enemy {
 EnemyRun run;
 EnemyThrust thrust;
 EnemyHit hit;
+Teleport teleport;
 int x;
 int y;
 int dx;
@@ -21,11 +22,13 @@ int curr_animation;
 int hits;
 double rotate_angle;
 GameAnimation curr;
+private boolean collide;
 ArrayList<Fireball> fireballs;
 public Enemy(JFrame window,int x, int y,int dx,int dy,ArrayList<Fireball> fireballs){
 run = new EnemyRun(window,x,y,dx,dy);
 thrust = new EnemyThrust(window, x, y, dx, dy);
 hit = new EnemyHit(window, x, y, dx, dy);
+teleport = new Teleport(window, x, y, dx, dy);
 this.x = x;
 this.y = y;
 this.rotate_angle =0;
@@ -34,6 +37,7 @@ this.dy = dy;
 this.curr_animation =0;
 curr = run;
 this.fireballs = fireballs;
+this.collide = false;
 curr.start();
 }
 
@@ -64,16 +68,22 @@ curr.start();
         curr = run;
     }
 
-    if(thrust.isfinished()){
+    if(thrust.isfinished()>1){
         curr = run;
     }
 
+    if(teleport.isfinished()>1){
+        curr = run;
+    }
+
+    if(!this.collide){
+
     fx = this.x + this.dx * Math.cos(this.rotate_angle);
     fy = this.y + this.dy * Math.sin(this.rotate_angle);
-    this.x = (int) fx;
+   this.x = (int) fx;
     this.y =  (int) fy;
  
-
+      }
         this.curr.setPosition(this.x, this.y);
         this.curr.update();
         
@@ -86,46 +96,23 @@ curr.start();
         }
 
     public void draw(Graphics2D g2){
-    /*
-        if(curr_animation==0){
-            this.run.draw(g2);
-        }else
-        if(curr_animation==1){
-            this.thrust.draw(g2);
-        }else 
-        if(curr_animation==2){
-            this.hit.draw(g2);
-        }*/
 
     this.curr.draw(g2);
+
 
     }
 
  
-    public Rectangle2D.Double getBoundingRectangle() {
-        return new Rectangle2D.Double (x, y, 300, 300);
-     }
+     public Rectangle2D.Double getBoundingRectangle() {
+         return new Rectangle2D.Double (x+(curr.getImageWidth()/2)-75, y+(curr.getImageHeight()/2)-62, 150 ,125);
+      }
 
 
        public void doThrust(){
-
-         /*
-          if(curr_animation==0){
-            EnemyRun curr = (EnemyRun) getCurrent();
-        }else
-        if(curr_animation==1){
-            EnemyThrust curr = (EnemyRun) getCurrent();
-        }else 
-        if(curr_animation==2){
-            EnemyHit curr = (EnemyRun) getCurrent();
-        }*/
+        if(curr != this.thrust){
         this.curr = this.thrust;
         curr.start();
-          
-
-        
-
-
+        }
        }
 
        public void doRun(){
@@ -137,18 +124,13 @@ curr.start();
            curr = hit;
            curr.start();
        }
+       public void doTeleport(){
+        curr = teleport;
+        curr.start();
+    }
       
        public GameAnimation getCurrent(){
-      /*
-        if(curr_animation==0){
-            return this.run;
-        }else
-        if(curr_animation==1){
-            return this.thrust;
-        }else 
-        if(curr_animation==2){
-            return this.hit;
-        }*/
+
         return this.curr;
 
        }
@@ -166,9 +148,15 @@ curr.start();
            this.curr.rotate(angle);
            this.rotate_angle = angle;
        }
-      
-    
 
+       public void setCollide(){
+          this.collide = true;
+       }
 
-    
+       public void unsetCollide(){
+           this.collide = false;
+       }   
+       public  int  getHits(){
+           return this.hits;
+       }
 }
