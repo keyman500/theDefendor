@@ -65,5 +65,6 @@ public interface GameAnimation{
     public Image loadImage (String fileName);
     public int getImageWidth();
     public int getImageHeight();
-
+    public void setRed();
+    public void unsetRed();
 }

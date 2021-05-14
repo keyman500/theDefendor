@@ -72,9 +72,10 @@ public class Defendor{
       }
      }
     
-    public void takeDamage(){
-          this.health -=5;
+    public void takeDamage(int n){
+          this.health -= n;
     }
+
 	
 
 

@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.awt.Graphics2D;
 import java.awt.Dimension;
 import javax.swing.JFrame;
+
+//import jdk.internal.net.http.common.FlowTube.TubePublisher;
+
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -25,8 +28,8 @@ public class EnemyManager{
     boolean enemywait;
     Dimension dimension;
     boolean reposition;
-    boolean level2;
-    boolean level3;
+    boolean wingame;
+   private Boss boss;
 public EnemyManager(JFrame window,ArrayList<Fireball> fireballs, Defendor defendor,int dy,int dx){
 enemies = new ArrayList<Enemy>();
 this.fireballs = fireballs;
@@ -40,15 +43,29 @@ this.enemywait = false;
 this.dimension = window.getSize();
 this.reposition = false;
 this.defeated =0;
-this.level2 = false;
-this.level3 = false;
-createEnemies(3);
+//createEnemies(3);
+createEnemies(1);
+int width = (int) dimension.getWidth();
+int height = (int) dimension.getHeight();
+
+int  x = random.nextInt(width);
+int  y = random.nextInt(height);
+boss = new Boss(window,x,y,dy,dx,fireballs);
+this.wingame = false;
 }
 
 public void draw(Graphics2D g2){
+
+   if(this.level==3){
+     this.boss.draw(g2);
+    }else{
+
     for(int i =0;i<enemies.size();i++){
         enemies.get(i).draw(g2);
     }
+
+    }
+
 }
 
 public void update(){
@@ -59,20 +76,37 @@ public void update(){
     int y1 = (int) p.getY();
     int repositinx=0,repositiny=0;
 
-    //level 2 of game
-    if(this.defeated==3&&this.level==1){
+    //activate level 2 of game
+    if(this.defeated==1&&this.level==1){
     
-        this.createEnemies(5);
+      //  this.createEnemies(5);
+      this.createEnemies(1);
         this.level++;
         
     }
-
-    if(this.defeated==8&&this.level==2){
-
-        this.createEnemies(10);
-        this.level++;
-    
+    //activate level 3 of game
+    if(this.defeated==2&&this.level==2){
+      this.level++;
     }
+    
+    if(this.level==3){
+        if(this.boss.getBoundingRectangle().intersects(this.defendor.getBoundingRectangle())){
+            this.boss.setCollide();
+            if(!this.boss.isHit())
+                this.defendor.takeDamage(20);
+            this.boss.doHit();
+        }
+        dx = x1 - boss.getX();
+        dy = y1 - boss.getY();
+        angle = Math.atan2(dy, dx);
+        this.boss.rotate(angle);
+        this.boss.update();
+       if(this.boss.getHits()==3){
+          this.wingame= true;
+        }
+        this.boss.unsetCollide();
+    }
+    else{
 
     for(int i =0;i<enemies.size();i++){
         Enemy e = enemies.get(i);
@@ -104,7 +138,7 @@ public void update(){
     if(e.getBoundingRectangle().intersects(defendor.getBoundingRectangle())){
         e.setCollide();
         if(!e.isThrust())
-            this.defendor.takeDamage();
+            this.defendor.takeDamage(5);
         e.doThrust();
    
     }
@@ -115,7 +149,7 @@ public void update(){
 
 
 }
-
+    }
 }
 
 public void createEnemies(int n){
@@ -151,4 +185,9 @@ public int getLevel(){
 public int getDefeated(){
     return this.defeated;
 }
+
+public boolean isWinGame(){
+    return this.wingame;
+}
+
 }

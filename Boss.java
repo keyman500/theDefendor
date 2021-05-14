@@ -23,7 +23,6 @@ GameAnimation curr;
 private boolean collide;
 ArrayList<Fireball> fireballs;
 public Boss(JFrame window,int x, int y,int dx,int dy,ArrayList<Fireball> fireballs){
-
 hit = new BossHit(window, x, y, dx, dy);
 walk  = new BossRun(window,x,y,dx,dy);
 this.x = x;
@@ -45,7 +44,7 @@ curr.start();
         for(int i=0;i<fireballs.size();i++){
             if(fireballs.get(i).getBoundingRectangle().intersects(this.getBoundingRectangle())){
              hits++;
-            this.doHit();
+             this.curr.setRed();
             fireballs.remove(i);
             System.out.println("hits: "+hits);
            }
@@ -69,10 +68,6 @@ curr.start();
         this.curr.setPosition(this.x, this.y);
         this.curr.update();
         
-       
-
-    
-        
 
           
         }
@@ -81,7 +76,7 @@ curr.start();
 
     this.curr.draw(g2);
 
-
+this.curr.unsetRed();
     }
 
  
@@ -89,27 +84,18 @@ curr.start();
          return new Rectangle2D.Double (x+(curr.getImageWidth()/2)-75, y+(curr.getImageHeight()/2)-62, 150 ,125);
       }
 
-
-       public void doThrust(){
-        if(curr != this.thrust){
-        this.curr = this.thrust;
-        curr.start();
-        }
-       }
-
        public void doRun(){
-        curr = run;
+        curr = walk;
         curr.start();
+       }
 
-       }
        public void doHit(){
-           curr = hit;
-           curr.start();
+        if(curr != this.hit){
+            this.curr = this.hit;
+            curr.start();
+            }
        }
-       public void doTeleport(){
-        curr = teleport;
-        curr.start();
-    }
+
       
        public GameAnimation getCurrent(){
 
@@ -123,6 +109,7 @@ curr.start();
        public int getX(){
            return this.x;
        }
+
        public int getY(){
            return this.y;
        }
@@ -141,8 +128,8 @@ curr.start();
        public  int  getHits(){
            return this.hits;
        }
-       public boolean isThrust(){
-           if(this.curr==this.thrust)
+       public boolean isHit(){
+           if(this.curr==this.hit)
                return true;
            return false;
        }

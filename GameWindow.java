@@ -224,8 +224,12 @@ public class GameWindow extends JFrame implements
 		this.map.draw((Graphics2D)gScr);
 
 		if(this.defendor.getHealth()<1){
-           gameOverMessage((Graphics2D)gScr);
+           gameOverMessage((Graphics2D)gScr,false);
 		   this.isPaused=  true;
+		}
+		if(this.enemyManager.isWinGame()){
+            gameOverMessage((Graphics2D)gScr, true);
+			this.isPaused = true;
 		}
 		if(!pauseshoot){
 			this.defendor.shooting.draw((Graphics2D)gScr);}
@@ -430,12 +434,15 @@ gScr.setColor(Color.black);
 
 	// displays a message to the screen when the user stops the game
 
-	private void gameOverMessage(Graphics g) {
-		
+	private void gameOverMessage(Graphics g,boolean win) {
+		String msg ="";
 		Font font = new Font("SansSerif", Font.BOLD, 24);
 		FontMetrics metrics = this.getFontMetrics(font);
 
-		String msg = "Game over you lose! Thanks for playing!";
+        if(win)
+		    msg = "You Win! Thanks for playing!";
+		else
+		    msg = "Game over you lose! Thanks for playing!";
 
 		int x = (pWidth - metrics.stringWidth(msg)) / 2; 
 		int y = (pHeight - metrics.getHeight()) / 2;
@@ -577,6 +584,7 @@ gScr.setColor(Color.black);
 	public void mouseReleased(MouseEvent e) {
 
 	}
+
 
 
 	// implement methods of MouseMotionListener interface

@@ -52,6 +52,7 @@ public class Animation implements GameAnimation{
      protected BufferedImage image1;
      protected int imagewidth;
      protected int imageheight;
+     protected boolean red;
    AffineTransform identity = new AffineTransform();
 
     public Animation(JFrame window,int x, int y,int dx,int dy) {
@@ -69,6 +70,7 @@ public class Animation implements GameAnimation{
      this.dy = dy;
      this.dy2 = (double) dy;
      this.dx2 = (double) dx;
+     this.red = false;
     }
 
     public Animation(JFrame window) {
@@ -79,6 +81,7 @@ public class Animation implements GameAnimation{
         active = 0;				// keeps track of how many animations have completed
         soundManager = SoundManager.getInstance();	
                             // get reference to Singleton instance of SoundManager
+        this.red = false;
         }
 
         public Animation(JFrame window,int x, int y,int dx,int dy,boolean infinite) {
@@ -93,6 +96,7 @@ public class Animation implements GameAnimation{
              this.dx = dx;
              this.dy = dy;
              this.infinite = infinite;
+             this.red = false;
             }
 
 
@@ -376,6 +380,13 @@ public int getImageHeight(){
 }
 public int getImageWidth(){
     return this.imagewidth;
+}
+
+public void setRed(){
+    this.red =true;
+}
+public void unsetRed(){
+    this.red = false;
 }
 
 }
