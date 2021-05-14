@@ -78,7 +78,7 @@ public Teleport(JFrame window,int x, int y,int dx,int dy){
   AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locationX, locationY);
           AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
           
-          g2.drawImage(op.filter(image, null), x, y,null);
+          g2.drawImage(op.filter(image, null), x, y,500,500,null);
      //x+(curr.getImageWidth()/2)-75, y+(curr.getImageHeight()/2)-62,
      //get height and width of enemy too insert instead of curr
   

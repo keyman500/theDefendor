@@ -106,7 +106,7 @@ public Fireball(JFrame window,int x, int y,int dx,int dy){
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
                 
                 g2.drawImage(op.filter(image, null), x, y,200,200,null);
-                g2.draw(getBoundingRectangle());
+             //   g2.draw(getBoundingRectangle());
                 //getBoundingRectangle().
             }
 

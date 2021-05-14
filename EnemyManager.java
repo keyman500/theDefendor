@@ -25,11 +25,13 @@ public class EnemyManager{
     boolean enemywait;
     Dimension dimension;
     boolean reposition;
+    boolean level2;
+    boolean level3;
 public EnemyManager(JFrame window,ArrayList<Fireball> fireballs, Defendor defendor,int dy,int dx){
 enemies = new ArrayList<Enemy>();
 this.fireballs = fireballs;
 this.window = window;
-level =0;
+level =1;
 this.defendor = defendor;
 this.random = new Random();
 this.dy = dy;
@@ -37,6 +39,9 @@ this.dx = dx;
 this.enemywait = false;
 this.dimension = window.getSize();
 this.reposition = false;
+this.defeated =0;
+this.level2 = false;
+this.level3 = false;
 createEnemies(3);
 }
 
@@ -54,20 +59,36 @@ public void update(){
     int y1 = (int) p.getY();
     int repositinx=0,repositiny=0;
 
+    //level 2 of game
+    if(this.defeated==3&&this.level==1){
+    
+        this.createEnemies(5);
+        this.level++;
+        
+    }
+
+    if(this.defeated==8&&this.level==2){
+
+        this.createEnemies(10);
+        this.level++;
+    
+    }
+
     for(int i =0;i<enemies.size();i++){
         Enemy e = enemies.get(i);
         if(random.nextInt(20)==0){
             e.doThrust();
         }
-        if(e.getHits()>20){
+        if(e.getHits()>10){
             enemies.remove(i);
+            this.defeated++;
         }
         else{
         dx = x1 - e.getX();
         dy = y1 - e.getY();
         angle = Math.atan2(dy, dx);
-        e.rotate(angle);
-        //loop for collision
+         e.rotate(angle);
+        //loop for collision with another enemy
         for(int l=0;l<enemies.size();l++){
         
         while(e.getBoundingRectangle().intersects(enemies.get(l).getBoundingRectangle())&&i!=l){
@@ -78,14 +99,18 @@ public void update(){
         }
     
     }
-    //if(reposition){
-     
-    //    reposition = false;
-   // }
-    //end loop for collision
+    //end loop
+
+    if(e.getBoundingRectangle().intersects(defendor.getBoundingRectangle())){
+        e.setCollide();
+        if(!e.isThrust())
+            this.defendor.takeDamage();
+        e.doThrust();
+   
+    }
            
            e.update();
-        //   e.unsetCollide();
+           e.unsetCollide();
     }
 
 
@@ -118,5 +143,12 @@ public void addEnemy(){
         }
     }
      enemies.add(e);
+}
+
+public int getLevel(){
+    return this.level;
+}
+public int getDefeated(){
+    return this.defeated;
 }
 }

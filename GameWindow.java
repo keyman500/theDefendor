@@ -66,6 +66,7 @@ public class GameWindow extends JFrame implements
 	private Defendor defendor;
 	private Enemy enemy;
 	private EnemyManager enemyManager;
+	private Background map;
 
 	public GameWindow() {
 		super("The Defendor: Full Screen Exclusive Mode");
@@ -73,7 +74,7 @@ public class GameWindow extends JFrame implements
 		initFullScreen();
 		
 		this.fireballs = new ArrayList<Fireball>();
-		this.enemy =  new Enemy(this,100,100,1,1,this.fireballs);
+	//	this.enemy =  new Enemy(this,100,100,1,1,this.fireballs);
 		this.pauserun = true;
 		this.pausefire = true;
 		this.pauseshoot = true;
@@ -82,17 +83,15 @@ public class GameWindow extends JFrame implements
         bgImage = loadImage("images/bg4.jpg");
 		quit1Image = loadImage("images/Quit1.png");
 		quit2Image = loadImage("images/Quit2.png");
-
 		setButtonAreas();
-         
 		addKeyListener(this);
 		addMouseListener(this);
 		addMouseMotionListener(this);
         //loading animations
 		this.defendor.running.start();
-		//this.enemy.start();
+		this.map = new Background(this,"./images/bg4.jpg", 10);
 		this.defendor.setActive(0);
-		this.enemyManager = new EnemyManager(this,fireballs,defendor,10,10);
+		this.enemyManager = new EnemyManager(this,fireballs,defendor,6,6);
 		soundManager = SoundManager.getInstance();
 		image = new BufferedImage (pWidth, pHeight, BufferedImage.TYPE_INT_RGB);
 
@@ -190,7 +189,7 @@ public class GameWindow extends JFrame implements
 	this.defendor.setActive(0);
 	}
 
-	this.enemy.update();
+	//this.enemy.update();
 	this.enemyManager.update();
 
 	}
@@ -220,8 +219,14 @@ public class GameWindow extends JFrame implements
 
 
 	public void gameRender (Graphics gScr) {		// draw the game objects
-		gScr.drawImage (bgImage, 0, 0, pWidth, pHeight, null);
+		//gScr.drawImage (bgImage, 0, 0, pWidth, pHeight, null);
 		// draw the background image
+		this.map.draw((Graphics2D)gScr);
+
+		if(this.defendor.getHealth()<1){
+           gameOverMessage((Graphics2D)gScr);
+		   this.isPaused=  true;
+		}
 		if(!pauseshoot){
 			this.defendor.shooting.draw((Graphics2D)gScr);}
 		else{
@@ -234,7 +239,7 @@ public class GameWindow extends JFrame implements
 		}
 	
 
-		this.enemy.draw((Graphics2D)gScr);
+	//	this.enemy.draw((Graphics2D)gScr);
 		this.enemyManager.draw((Graphics2D)gScr);
 
 	//	defender.draw((Graphics2D)gScr);
@@ -368,7 +373,7 @@ gScr.setColor(Color.black);
 		if (isStopped)
 			g.drawString("Stopped", stopButtonArea.x+40, stopButtonArea.y+25);
 		else
-			g.drawString("Stop", stopButtonArea.x+60, stopButtonArea.y+25);
+			g.drawString("kills "+this.enemyManager.getDefeated(), stopButtonArea.x+40, stopButtonArea.y+25);
 
 		// draw the show animation 'button'
 
@@ -380,7 +385,7 @@ gScr.setColor(Color.black);
 			g.setColor(Color.WHITE);
 		else
 			g.setColor(Color.RED);
-      		g.drawString("Start Anim", showAnimButtonArea.x+35, showAnimButtonArea.y+25);
+      		g.drawString("Round "+this.enemyManager.getLevel(), showAnimButtonArea.x+40, showAnimButtonArea.y+25);
 
 		// draw the pause anim 'button'
 
@@ -396,8 +401,9 @@ gScr.setColor(Color.black);
 		if (isAnimShown && isAnimPaused && !isStopped)
 			g.drawString("Anim Paused", pauseAnimButtonArea.x+30, pauseAnimButtonArea.y+25);
 		else
-			g.drawString("Pause Anim", pauseAnimButtonArea.x+35, pauseAnimButtonArea.y+25);
+			g.drawString("Health "+this.defendor.getHealth(), pauseAnimButtonArea.x+35, pauseAnimButtonArea.y+25);
 
+			
 		// draw the quit button (an actual image that changes when the mouse moves over it)
 
 		if (isOverQuitButton)
@@ -429,7 +435,7 @@ gScr.setColor(Color.black);
 		Font font = new Font("SansSerif", Font.BOLD, 24);
 		FontMetrics metrics = this.getFontMetrics(font);
 
-		String msg = "Game Over. Thanks for playing!";
+		String msg = "Game over you lose! Thanks for playing!";
 
 		int x = (pWidth - metrics.stringWidth(msg)) / 2; 
 		int y = (pHeight - metrics.getHeight()) / 2;
@@ -444,6 +450,7 @@ gScr.setColor(Color.black);
 	// implementation of methods in KeyListener interface
 
 	public void keyPressed (KeyEvent e) {
+		map.moveUp();
 
 		if (isPaused)
 			return;
@@ -535,6 +542,7 @@ gScr.setColor(Color.black);
 
 
 	public void mousePressed(MouseEvent e) {
+		
 		testMousePress(e.getX(), e.getY());
 		//this.enemy.stab();
 		//this.enemy.doThrust();
@@ -555,7 +563,7 @@ gScr.setColor(Color.black);
 			offx =  (int) (120 * Math.cos(theta) - 5 * Math.sin(theta));
 			offy =  (int) (120 * Math.sin(theta) + 5 * Math.cos(theta));
 			//this.f = new Fireball(this,offx,offy,40,40);
-			this.f = new Fireball(this,this.defendor.shooting.getX()+offx,this.defendor.shooting.getY() + offy,40,40);
+			this.f = new Fireball(this,this.defendor.shooting.getX()+offx,this.defendor.shooting.getY() + offy,60,60);
 			//this.f = new Fireball(this,this.defendor.shooting.getX()+150,this.defendor.shooting.getY() + 40,40,40);
 			fireballs.add(this.f);
 			this.f.start();
@@ -609,11 +617,11 @@ gScr.setColor(Color.black);
 		if (isStopped && !isOverQuitButton) 	// don't do anything if game stopped
 			return;
 
-		if (isOverStopButton) {			// mouse click on Stop button
-			isStopped = true;
-			isPaused = false;
-		}
-		else
+		//if (isOverStopButton) {			// mouse click on Stop button
+		//	isStopped = true;
+		//	isPaused = false;
+		//}
+		//else
 		if (isOverPauseButton) {		// mouse click on Pause button
 			isPaused = !isPaused;     	// toggle pausing
 		}

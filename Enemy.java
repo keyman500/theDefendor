@@ -159,4 +159,9 @@ curr.start();
        public  int  getHits(){
            return this.hits;
        }
+       public boolean isThrust(){
+           if(this.curr==this.thrust)
+               return true;
+           return false;
+       }
 }

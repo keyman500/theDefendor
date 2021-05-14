@@ -16,17 +16,25 @@ public class Background {
 	private int backgroundX2;
 	private int bgDX;			// size of the background move (in pixels)
 
+	private int backgroundY;
+	private int backgroundY2;
+	private int bgY;
+	private int bgImageHeight;
+	
+
 
   public Background(JFrame window, String imageFile, int bgDX) {
     
 	this.window = window;
     	this.bgImage = loadImage(imageFile);
     	bgImageWidth = bgImage.getWidth(null);	// get width of the background
-
+       //  bgY =0;
+		
 	System.out.println ("bgImageWidth = " + bgImageWidth);
 
 	dimension = window.getSize();
-
+	bgImageHeight = (int) dimension.getHeight();
+//bgImageHeight = bgImage.getHeight(null);
 	if (bgImageWidth < dimension.width)
       		System.out.println("Background width < panel width");
 
@@ -80,11 +88,38 @@ public class Background {
 		backgroundX2 = 0;
 	}			
    }
- 
+
+   
+   public void moveUp() {
+
+	if (bgY == 0) {
+		backgroundY = 0;
+		backgroundY2 = bgImageHeight;			
+	}
+
+	bgY = bgY - bgDX;
+
+	//bgDX is speed
+
+	backgroundY = backgroundY - 1;
+	backgroundY2 = backgroundY2 - 1;
+
+	String mess = "Right: bgX=" + bgX + " bgX1=" + backgroundX + " bgX2=" + backgroundX2;
+	//System.out.println (mess);
+
+	if ((bgY + bgImageHeight) % bgImageHeight == 0) {
+		System.out.println ("Background change: bgY = " + bgY); 
+		backgroundY = 0;
+		backgroundY2 = bgImageHeight;
+	}
+
+  }
+
 
   public void draw (Graphics2D g2) {
-	g2.drawImage(bgImage, backgroundX, 0, null);
-	g2.drawImage(bgImage, backgroundX2, 0, null);
+	  
+	g2.drawImage(bgImage, 0, backgroundY,(int)dimension.getWidth(),bgImageHeight, null);
+	g2.drawImage(bgImage, 0, backgroundY2,(int)dimension.getWidth(),bgImageHeight,null);
   }
 
 

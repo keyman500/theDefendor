@@ -9,6 +9,8 @@ import java.awt.image.BufferedImage;
 import javax.swing.*;	
 import java.awt.geom.Point2D;
 import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 
 public class Defendor{
     int x;
@@ -16,15 +18,18 @@ public class Defendor{
     DefendorRun running;
     DefendorShoot shooting;
     int active_animation;
+    int health;
 
     public Defendor(JFrame window,int x, int y,int dx,int dy){
    this.running = new DefendorRun(window,x,y,dx,dy);
    this.shooting = new DefendorShoot(window,x,y,dx,dy);
+   this.health = 100;
     
     }
     public Defendor(JFrame window){
      this.running = new DefendorRun(window);
      this.shooting = new DefendorShoot(window);
+     this.health = 100;
 
     }
     
@@ -51,6 +56,25 @@ public class Defendor{
      return new Point(this.x,this.y);
     }
 
+    public int getHealth(){
+        return this.health;
+    }
+   
+
+    
+
+    public Rectangle2D.Double getBoundingRectangle() {
+      if(this.active_animation==0){
+          return this.running.getBoundingRectangle();
+
+      }else{
+          return this.shooting.getBoundingRectangle();
+      }
+     }
+    
+    public void takeDamage(){
+          this.health -=5;
+    }
 	
 
 
