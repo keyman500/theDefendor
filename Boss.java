@@ -22,6 +22,7 @@ double rotate_angle;
 GameAnimation curr;
 private boolean collide;
 ArrayList<Fireball> fireballs;
+SoundManager soundManager;
 public Boss(JFrame window,int x, int y,int dx,int dy,ArrayList<Fireball> fireballs){
 hit = new BossHit(window, x, y, dx, dy);
 walk  = new BossRun(window,x,y,dx,dy);
@@ -34,6 +35,7 @@ this.curr_animation =0;
 curr = walk;
 this.fireballs = fireballs;
 this.collide = false;
+this.soundManager = SoundManager.getInstance();
 curr.start();
 }
 
@@ -46,6 +48,7 @@ curr.start();
              hits++;
              this.curr.setRed();
             fireballs.remove(i);
+            this.soundManager.playSound("Rgethit",false);
             System.out.println("hits: "+hits);
            }
        }

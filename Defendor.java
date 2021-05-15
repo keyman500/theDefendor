@@ -76,6 +76,20 @@ public class Defendor{
           this.health -= n;
     }
 
+
+    public void setRed(){
+        if(this.active_animation==0){
+             this.running.setRed();
+  
+        }else{
+            this.shooting.setRed();
+        }
+    }
+
+    public void unsetRed(){
+        this.running.unsetRed();
+        this.shooting.unsetRed();
+    }
 	
 
 

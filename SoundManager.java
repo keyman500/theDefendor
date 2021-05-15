@@ -24,12 +24,44 @@ public class SoundManager {				// a Singleton class
 		clips.put("fireball", clip);		
 						
 
+
 		clip = loadClip("sounds/Concrete2.wav");
 	clips.put("walk", clip);		// played when a special sprite 
 							//   makes an appearance
 
 		clip = loadClip("sounds/speak.wav");
 		clips.put("speak",clip);
+
+		clip = loadClip("sounds/bg1.wav");
+		clips.put("bg1",clip);
+
+		clip = loadClip("sounds/Edie.wav");
+		clips.put("Edie",clip);
+
+		clip = loadClip("sounds/Pdamage.wav");
+		clips.put("Pdamage",clip);
+
+		clip = loadClip("sounds/poweron.wav");
+		clips.put("poweron",clip);
+
+		clip = loadClip("sounds/Rattack.wav");
+		clips.put("Rattack",clip);
+
+		clip = loadClip("sounds/Rgethit.wav");
+		clips.put("Rgethit",clip);
+
+		clip = loadClip("sounds/Rtalk.wav");
+		clips.put("Rtalk",clip);
+
+		clip = loadClip("sounds/Rwalk1.wav");
+		clips.put("Rwalk1",clip);
+
+		clip = loadClip("sounds/Rwalk2.wav");
+		clips.put("Rwalk2",clip);
+
+		clip = loadClip("sounds/stick.wav");
+		clips.put("stick",clip);
+
 	}
 
 

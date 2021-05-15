@@ -97,19 +97,13 @@ public class Background {
 		backgroundY2 = bgImageHeight;			
 	}
 
-	bgY = bgY - bgDX;
-
-	//bgDX is speed
-
+	bgY = bgY - 10;
 	backgroundY = backgroundY - 1;
 	backgroundY2 = backgroundY2 - 1;
 
-	String mess = "Right: bgX=" + bgX + " bgX1=" + backgroundX + " bgX2=" + backgroundX2;
-	//System.out.println (mess);
-
-	if ((bgY + bgImageHeight) % bgImageHeight == 0) {
+	if ((bgY + (bgImageHeight*2)) % (bgImageHeight*2) == 0) {
 		System.out.println ("Background change: bgY = " + bgY); 
-		backgroundY = 0;
+	    backgroundY = 0;
 		backgroundY2 = bgImageHeight;
 	}
 
@@ -120,6 +114,7 @@ public class Background {
 	  
 	g2.drawImage(bgImage, 0, backgroundY,(int)dimension.getWidth(),bgImageHeight, null);
 	g2.drawImage(bgImage, 0, backgroundY2,(int)dimension.getWidth(),bgImageHeight,null);
+//	g2.drawImage(bgImage, 0, backgroundY2 * -1,(int)dimension.getWidth(),bgImageHeight,null);
   }
 
 

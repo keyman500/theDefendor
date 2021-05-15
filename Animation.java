@@ -71,6 +71,7 @@ public class Animation implements GameAnimation{
      this.dy2 = (double) dy;
      this.dx2 = (double) dx;
      this.red = false;
+     this.dimension = window.getSize();
     }
 
     public Animation(JFrame window) {
@@ -82,6 +83,7 @@ public class Animation implements GameAnimation{
         soundManager = SoundManager.getInstance();	
                             // get reference to Singleton instance of SoundManager
         this.red = false;
+        this.dimension = window.getSize();
         }
 
         public Animation(JFrame window,int x, int y,int dx,int dy,boolean infinite) {
@@ -97,6 +99,7 @@ public class Animation implements GameAnimation{
              this.dy = dy;
              this.infinite = infinite;
              this.red = false;
+             this.dimension = window.getSize();
             }
 
 
@@ -184,7 +187,7 @@ public class Animation implements GameAnimation{
             }
         }
 
-        dimension = window.getSize();
+     //   dimension = window.getSize();
 
     }
     }
@@ -263,7 +266,6 @@ AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locati
     }
     
     public void moveLeft () {
-        playSound();
         Dimension dimension;
   
         if (!window.isVisible ()) return;
@@ -279,40 +281,24 @@ AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locati
   
   
      public void moveRight () {
-         playSound();
-        Dimension dimension;
+        
   
         if (!window.isVisible ()) return;
 
   
-        dimension = window.getSize();
-  
-       // int tileMapWidth = tileMap.getWidthPixels();
-  
-        //int playerWidth = playerImage.getWidth(null);
-  
-        //if ((x + DX + playerWidth) <= tileMapWidth) {
-  
-        //int xTile = tileMap.pixelsToTiles(x + DX + playerWidth);
-        //int yTile = tileMap.pixelsToTiles(y) - 1;
-  
-         //   String mess = "Coordinates in TileMap: (" + xTile + "," + yTile + ")";
-        //System.out.println (mess);
-  
-        //if (tileMap.getTile(xTile, yTile) == null)
+        if ((x + dx + 200) < dimension.getWidth())        
             x = x + dx;
-        //}
-  
-        // check if x is outside the right side of the tile map.
+
   
      }
   
   
      public void moveUp () {
-  playSound();
+
         if (!window.isVisible ()) return;
-  
-        y = y - dy;
+
+        if ((y - dy) > 0)
+            y = y - dy;
      }
 
      
@@ -322,10 +308,12 @@ AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locati
      }
   
      public void moveDown () {
-     playSound();
+    
         if (!window.isVisible ()) return;
-  
-        y = y + dy;
+       
+
+        if ((y + dy + 200) < dimension.getHeight())
+           y = y + dy;
      }
      public void setPosition(int x,int y){
          this.x = x;

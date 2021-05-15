@@ -51,9 +51,6 @@ public class GameWindow extends JFrame implements
 	private BufferStrategy bufferStrategy;
 
 	private SoundManager soundManager;
-	BackgroundManager bgManager;
-	TileMapManager tileManager;
-	TileMap	tileMap;
 	private Image bgImage;
 	private Animation runing;
 	private Boolean pauserun;
@@ -89,11 +86,13 @@ public class GameWindow extends JFrame implements
 		addMouseMotionListener(this);
         //loading animations
 		this.defendor.running.start();
-		this.map = new Background(this,"./images/bg4.jpg", 10);
+		this.map = new Background(this,"./images/bg4.jpg", 1);
 		this.defendor.setActive(0);
 		this.enemyManager = new EnemyManager(this,fireballs,defendor,6,6);
 		soundManager = SoundManager.getInstance();
 		image = new BufferedImage (pWidth, pHeight, BufferedImage.TYPE_INT_RGB);
+		this.soundManager.playSound("bg1",true);
+		this.soundManager.playSound("speak",false);
 
 		startGame();
 
@@ -223,14 +222,7 @@ public class GameWindow extends JFrame implements
 		// draw the background image
 		this.map.draw((Graphics2D)gScr);
 
-		if(this.defendor.getHealth()<1){
-           gameOverMessage((Graphics2D)gScr,false);
-		   this.isPaused=  true;
-		}
-		if(this.enemyManager.isWinGame()){
-            gameOverMessage((Graphics2D)gScr, true);
-			this.isPaused = true;
-		}
+	
 		if(!pauseshoot){
 			this.defendor.shooting.draw((Graphics2D)gScr);}
 		else{
@@ -242,14 +234,22 @@ public class GameWindow extends JFrame implements
 		}
 		}
 	
-
-	//	this.enemy.draw((Graphics2D)gScr);
 		this.enemyManager.draw((Graphics2D)gScr);
 
-	//	defender.draw((Graphics2D)gScr);
+	if(this.defendor.getHealth()<1){
+		gameOverMessage((Graphics2D)gScr,false);
+		this.isPaused=  true;
+		this.soundManager.stopSound("Rwalk2");
+	 }
+	 if(this.enemyManager.isWinGame()){
+		 gameOverMessage((Graphics2D)gScr, true);
+		 this.isPaused = true;
+		 this.soundManager.stopSound("Rwalk2");
+	 }
 drawButtons(gScr);			// draw the buttons
 
 gScr.setColor(Color.black);
+
 
 
 
@@ -295,8 +295,6 @@ gScr.setColor(Color.black);
 	}
 
 
-	// This method provides details about the current display mode.
-
 	private void showCurrentMode() {
 		DisplayMode dm = device.getDisplayMode();
 
@@ -306,12 +304,8 @@ gScr.setColor(Color.black);
   	}
 
 
-	// Specify screen areas for the buttons and create bounding rectangles
 
 	private void setButtonAreas() {
-		
-		//  leftOffset is the distance of a button from the left side of the window.
-		//  Buttons are placed at the top of the window.
 
 		int leftOffset = (pWidth - (5 * 150) - (4 * 20)) / 2;
 		pauseButtonArea = new Rectangle(leftOffset, 60, 150, 40);
@@ -340,14 +334,12 @@ gScr.setColor(Color.black);
 	private void drawButtons (Graphics g) {
 		Font oldFont, newFont;
 
-		oldFont = g.getFont();		// save current font to restore when finished
+		oldFont = g.getFont();	
 	
 		newFont = new Font ("TimesRoman", Font.ITALIC + Font.BOLD, 18);
-		g.setFont(newFont);		// set this as font for text on buttons
+		g.setFont(newFont);		
 
-    		g.setColor(Color.black);	// set outline colour of button
-
-		// draw the pause 'button'
+    		g.setColor(Color.black);
 
 		g.setColor(Color.BLACK);
 		g.drawOval(pauseButtonArea.x, pauseButtonArea.y, 
@@ -363,8 +355,6 @@ gScr.setColor(Color.black);
 		else
 			g.drawString("Pause", pauseButtonArea.x+55, pauseButtonArea.y+25);
 
-		// draw the stop 'button'
-
 		g.setColor(Color.BLACK);
 		g.drawOval(stopButtonArea.x, stopButtonArea.y, 
 			   stopButtonArea.width, stopButtonArea.height);
@@ -379,7 +369,6 @@ gScr.setColor(Color.black);
 		else
 			g.drawString("kills "+this.enemyManager.getDefeated(), stopButtonArea.x+40, stopButtonArea.y+25);
 
-		// draw the show animation 'button'
 
 		g.setColor(Color.BLACK);
 		g.drawOval(showAnimButtonArea.x, showAnimButtonArea.y, 
@@ -390,8 +379,6 @@ gScr.setColor(Color.black);
 		else
 			g.setColor(Color.RED);
       		g.drawString("Round "+this.enemyManager.getLevel(), showAnimButtonArea.x+40, showAnimButtonArea.y+25);
-
-		// draw the pause anim 'button'
 
 		g.setColor(Color.BLACK);
 		g.drawOval(pauseAnimButtonArea.x, pauseAnimButtonArea.y, 
@@ -407,18 +394,15 @@ gScr.setColor(Color.black);
 		else
 			g.drawString("Health "+this.defendor.getHealth(), pauseAnimButtonArea.x+35, pauseAnimButtonArea.y+25);
 
-			
-		// draw the quit button (an actual image that changes when the mouse moves over it)
 
 		if (isOverQuitButton)
 		   g.drawImage(quit1Image, quitButtonArea.x, quitButtonArea.y, 180, 50, null);
-		    	       //quitButtonArea.width, quitButtonArea.height, null);
-				
+		    	   
 		else
 		   g.drawImage(quit2Image, quitButtonArea.x, quitButtonArea.y, 180, 50, null);
-		    	       //quitButtonArea.width, quitButtonArea.height, null);
+		    	      
 
-		g.setFont(oldFont);		// reset font
+		g.setFont(oldFont);		
 
 	}
 
@@ -431,8 +415,6 @@ gScr.setColor(Color.black);
 		}
 	}
 
-
-	// displays a message to the screen when the user stops the game
 
 	private void gameOverMessage(Graphics g,boolean win) {
 		String msg ="";
@@ -457,8 +439,8 @@ gScr.setColor(Color.black);
 	// implementation of methods in KeyListener interface
 
 	public void keyPressed (KeyEvent e) {
-		map.moveUp();
-
+		
+	
 		if (isPaused)
 			return;
 
@@ -466,8 +448,8 @@ gScr.setColor(Color.black);
 
 		if ((keyCode == KeyEvent.VK_ESCAPE) || (keyCode == KeyEvent.VK_Q) ||
              	   (keyCode == KeyEvent.VK_END)) {
-           		isRunning = false;		// user can quit anytime by pressing
-			return;				//  one of these keys (ESC, Q, END)			
+           		isRunning = false;
+			return;					
          	}
 		else
 		if (keyCode == KeyEvent.VK_A) {
@@ -480,7 +462,6 @@ gScr.setColor(Color.black);
 		     System.out.println("going left bro");
 		}
            
-			//defender.moveLeft();
 		}
 		else
 		if (keyCode == KeyEvent.VK_D) {
@@ -492,7 +473,6 @@ gScr.setColor(Color.black);
 		}
 		else
 		if (keyCode == KeyEvent.VK_W) {
-			//defender.moveUp();
 			if(!this.pauseshoot){
 				this.defendor.shooting.moveUp();
 			}else{
@@ -501,7 +481,7 @@ gScr.setColor(Color.black);
 		}
 		else
 		if (keyCode == KeyEvent.VK_S) {
-			//defender.moveDown();
+            map.moveUp();
 			if(!this.pauseshoot){
 				this.defendor.shooting.moveDown();
 			}else{
@@ -514,8 +494,6 @@ gScr.setColor(Color.black);
 
 	public void keyReleased (KeyEvent e) {
      this.pauserun = true;
-	 this.defendor.running.stopSound();
-	 this.defendor.shooting.stopSound();
 
 	}
 
@@ -525,7 +503,7 @@ gScr.setColor(Color.black);
 	}
 
 
-	// implement methods of MouseListener interface
+
 
 	public void mouseClicked(MouseEvent e) {
      
@@ -551,10 +529,6 @@ gScr.setColor(Color.black);
 	public void mousePressed(MouseEvent e) {
 		
 		testMousePress(e.getX(), e.getY());
-		//this.enemy.stab();
-		//this.enemy.doThrust();
-		//this.enemy.doHit();
-
 		int offx,offy;
 		double theta;
 
@@ -569,13 +543,10 @@ gScr.setColor(Color.black);
 			theta = this.defendor.shooting.getAngle();
 			offx =  (int) (120 * Math.cos(theta) - 5 * Math.sin(theta));
 			offy =  (int) (120 * Math.sin(theta) + 5 * Math.cos(theta));
-			//this.f = new Fireball(this,offx,offy,40,40);
 			this.f = new Fireball(this,this.defendor.shooting.getX()+offx,this.defendor.shooting.getY() + offy,60,60);
-			//this.f = new Fireball(this,this.defendor.shooting.getX()+150,this.defendor.shooting.getY() + 40,40,40);
 			fireballs.add(this.f);
 			this.f.start();
 			this.f.rotate(this.defendor.shooting.getAngle());
-	    	//this.f.setPosition(this.shooting.getX()+150, this.shooting.getY() + 40);
 			this.pausefire = false;
 			this.soundManager.playSound("fireball", false);
 	}
@@ -585,9 +556,6 @@ gScr.setColor(Color.black);
 
 	}
 
-
-
-	// implement methods of MouseMotionListener interface
 
 	public void mouseDragged(MouseEvent e) {		
 	        double angle = 0;
@@ -616,50 +584,35 @@ gScr.setColor(Color.black);
 	}
 
 
-	/* This method handles mouse clicks on one of the buttons
-	   (Pause, Stop, Start Anim, Pause Anim, and Quit).
-	*/
-
 	private void testMousePress(int x, int y) {
 
-		if (isStopped && !isOverQuitButton) 	// don't do anything if game stopped
+		if (isStopped && !isOverQuitButton) 	
 			return;
 
-		//if (isOverStopButton) {			// mouse click on Stop button
-		//	isStopped = true;
-		//	isPaused = false;
-		//}
-		//else
-		if (isOverPauseButton) {		// mouse click on Pause button
-			isPaused = !isPaused;     	// toggle pausing
+		if (isOverPauseButton) {		
+			isPaused = !isPaused;     	
 		}
 		else 
-		if (isOverShowAnimButton && !isPaused) {// mouse click on Start Anim button
+		if (isOverShowAnimButton && !isPaused) {
 			isAnimShown = true;
 		 	isAnimPaused = false;
 
 		}
 		else
-		if (isOverPauseAnimButton) {		// mouse click on Pause Anim button
+		if (isOverPauseAnimButton) {	
 			if (isAnimPaused) {
 				isAnimPaused = false;
 				
 			}
 			else {
-				isAnimPaused = true;	// toggle pausing
+				isAnimPaused = true;	
 				
 			}
 		}
-		else if (isOverQuitButton) {		// mouse click on Quit button
-			isRunning = false;		// set running to false to terminate
+		else if (isOverQuitButton) {		
+			isRunning = false;		
 		}
   	}
-
-
-	/* This method checks to see if the mouse is currently moving over one of
-	   the buttons (Pause, Stop, Show Anim, Pause Anim, and Quit). It sets a
-	   boolean value which will cause the button to be displayed accordingly.
-	*/
 
 	private void testMouseMove(int x, int y) { 
 		if (isRunning) {

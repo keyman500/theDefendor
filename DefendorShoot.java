@@ -15,33 +15,74 @@ public class DefendorShoot extends Animation{
 
     public DefendorShoot(JFrame window,int x, int y,int dx,int dy){
         super(window,x,y,dx,dy);
-        //load_shoot();
         this.loadAnimation("./images/hipFire/Armature_hipFire_", 51, 15);
     
     }
     public DefendorShoot(JFrame window){
         super(window);
-       // load_shoot();
        this.loadAnimation("./images/hipFire/Armature_hipFire_", 51, 15);
 
     }
 
-    /*
-    public void load_shoot(){
-		Image frame = null;
-		String filename = "./images/hipFire/Armature_hipFire_";
-         String framename="";
-       for(int i=0;i<51;i++){
-		framename = filename + i + ".png";
-        frame = loadImage(framename);
-		this.addFrame(frame,15);
-	   }
-
-	}*/
  @Override
 public Rectangle2D.Double getBoundingRectangle() {
     return new Rectangle2D.Double (x+(this.getImageWidth()/2)-100, y+(this.getImageHeight()/2)-120, 270 ,245);
 
+}
+
+@Override
+public void draw (Graphics2D g2) {		// draw the current frame on the JPanel
+  
+      
+
+  if (active == 0){
+  return;}
+
+
+
+BufferedImage image = this.toBufferedImage(getImage());
+
+//BufferedImage image = this.toBufferedImage(getImage());
+
+int imWidth = image.getWidth();
+int imHeight = image.getHeight();
+
+double locationX = imWidth / 2;
+double locationY = imHeight / 2;
+
+if(this.red){
+int [] pixels = new int[imWidth * imHeight];
+image.getRGB(0, 0, imWidth, imHeight, pixels, 0, imWidth);
+
+
+for (int i=0; i<pixels.length; i++) {
+pixels[i] = toRed(pixels[i]);
+}
+
+image.setRGB(0, 0, imWidth, imHeight, pixels, 0, imWidth);	
+}
+AffineTransform tx = AffineTransform.getRotateInstance(this.rotate_angle, locationX, locationY);
+  AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+  
+  g2.drawImage(op.filter(image, null), x, y,null);
+
+
+}
+
+
+public int toRed (int pixel) {
+
+int alpha, red, green, blue, gray;
+int newPixel;
+
+alpha = (pixel >> 24) & 255;
+red = (pixel >> 16) & 255;
+green = (pixel >> 8) & 255;
+blue = pixel & 255;
+green = 0;
+blue = 0;
+newPixel = blue | (green << 8) | (red << 16) | (alpha << 24);
+return newPixel;
 }
 
 }

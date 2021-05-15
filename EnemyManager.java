@@ -5,9 +5,7 @@ import java.util.ArrayList;
 import java.awt.Graphics2D;
 import java.awt.Dimension;
 import javax.swing.JFrame;
-
 //import jdk.internal.net.http.common.FlowTube.TubePublisher;
-
 import java.awt.geom.AffineTransform;
 import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
@@ -30,6 +28,8 @@ public class EnemyManager{
     boolean reposition;
     boolean wingame;
    private Boss boss;
+   boolean startboss;
+   SoundManager soundManager;
 public EnemyManager(JFrame window,ArrayList<Fireball> fireballs, Defendor defendor,int dy,int dx){
 enemies = new ArrayList<Enemy>();
 this.fireballs = fireballs;
@@ -44,7 +44,8 @@ this.dimension = window.getSize();
 this.reposition = false;
 this.defeated =0;
 //createEnemies(3);
-createEnemies(1);
+this.soundManager =  SoundManager.getInstance();
+createEnemies(3);
 int width = (int) dimension.getWidth();
 int height = (int) dimension.getHeight();
 
@@ -52,6 +53,7 @@ int  x = random.nextInt(width);
 int  y = random.nextInt(height);
 boss = new Boss(window,x,y,dy,dx,fireballs);
 this.wingame = false;
+this.startboss = false;
 }
 
 public void draw(Graphics2D g2){
@@ -77,23 +79,31 @@ public void update(){
     int repositinx=0,repositiny=0;
 
     //activate level 2 of game
-    if(this.defeated==1&&this.level==1){
+    if(this.defeated==3&&this.level==1){
     
       //  this.createEnemies(5);
-      this.createEnemies(1);
+      this.createEnemies(5);
         this.level++;
         
     }
     //activate level 3 of game
-    if(this.defeated==2&&this.level==2){
+    if(this.defeated==8&&this.level==2){
       this.level++;
     }
     
     if(this.level==3){
+        if(!startboss){
+         this.soundManager.playSound("poweron",false);
+        this.soundManager.playSound("Rtalk",false);
+        this.soundManager.playSound("Rwalk2",true);
+        startboss =true;
+        }
         if(this.boss.getBoundingRectangle().intersects(this.defendor.getBoundingRectangle())){
             this.boss.setCollide();
-            if(!this.boss.isHit())
+            if(!this.boss.isHit()){
                 this.defendor.takeDamage(20);
+                this.soundManager.playSound("Rattack",false);
+            }
             this.boss.doHit();
         }
         dx = x1 - boss.getX();
@@ -101,7 +111,7 @@ public void update(){
         angle = Math.atan2(dy, dx);
         this.boss.rotate(angle);
         this.boss.update();
-       if(this.boss.getHits()==3){
+       if(this.boss.getHits()==100){
           this.wingame= true;
         }
         this.boss.unsetCollide();
@@ -112,10 +122,12 @@ public void update(){
         Enemy e = enemies.get(i);
         if(random.nextInt(20)==0){
             e.doThrust();
+            this.soundManager.playSound("stick",false);
         }
         if(e.getHits()>10){
             enemies.remove(i);
             this.defeated++;
+            this.soundManager.playSound("Edie",false);
         }
         else{
         dx = x1 - e.getX();
@@ -137,8 +149,10 @@ public void update(){
 
     if(e.getBoundingRectangle().intersects(defendor.getBoundingRectangle())){
         e.setCollide();
-        if(!e.isThrust())
+        if(!e.isThrust()){
             this.defendor.takeDamage(5);
+            this.soundManager.playSound("Pdamage",false);
+           }
         e.doThrust();
    
     }
@@ -148,8 +162,11 @@ public void update(){
     }
 
 
+
+
 }
     }
+
 }
 
 public void createEnemies(int n){
