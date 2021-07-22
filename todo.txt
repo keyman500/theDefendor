@@ -1,7 +1,0 @@
-Fix mouse tracking for all animations.
-fix teleport animation
-make teleport animation bigger too see all the nice details of the images
-put in infinite scroll and frezze enemies when scrolling
-create user interface
-include sounds
-finish enemy maneger too have 3 levels.
